@@ -236,7 +236,24 @@ not automatically a better or more interpretable J-Lens.
 ### `artifacts/qwen_ascii_face_slice.html`
 
 A self-contained interactive view suitable for download from Colab. Treat it as an
-experiment output, so `artifacts/` is gitignored rather than committed.
+experiment output. The verified Iteration 1 copy is committed explicitly; the directory
+remains ignored so later runs do not silently replace the archived evidence.
+
+### `visualizations/jlens-concept-atlas.html`
+
+A self-contained explanatory companion built from the committed validation report. It
+contains three linked views:
+
+1. **Transport** keeps the residual fixed while contrasting
+   `W_U N(J_l h_l,p)` with the matched identity-path control `W_U N(h_l,p)`.
+2. **Emergence braid** compares each branch's top-10 set with the ordinary model's final
+   top-10 across layers. The plotted value is set overlap, not confidence or accuracy.
+3. **Causal horizon** shows why position `-1` predicts an unseen continuation while
+   position `-2` reconstructs a supplied token.
+
+This atlas is an interpretation aid, not a new experiment. It does not add local-Jacobian
+measurements, interventions, or evidence for causal mediation. Control characters in token
+labels are normalized for readability; the underlying values remain in the JSON archive.
 
 ## 7. Validation gates and what each proves
 
@@ -292,14 +309,15 @@ prompt ranked `Euro` first at layer 30, the typo prompt ranked `Paris` first at 
 and the ASCII-face prompt ranked `nose` first at layers 24 and 30. These examples are
 descriptive smoke-test evidence only; they are not an accuracy benchmark or causal claim.
 
-The HTML title and expected rank/interaction markup passed static inspection. A real local
-browser render could not be completed because the browser sandbox rejected both the
-temporary localhost server and direct `file://` navigation. Interactive visual QA therefore
-remains open and is not represented as passed.
+The HTML title and expected rank/interaction markup passed static inspection. Manual Chrome
+QA covered position/layer selections `(16, 12)`, `(14, 24)`, and `(17, 31)`. In every state,
+the URL parameters, matrix highlight, selected vocabulary item, pin list, heatmap marker,
+layer trajectory, and position trajectory agreed. This closes the visual-QA follow-up for
+the official slice.
 
-The generated JSON, HTML, and executed notebook remain gitignored. Consequently, this
-iteration verifies the executable path and records a source-controlled summary, but it does
-not yet satisfy the roadmap's stronger requirement to archive numerical and visual results.
+The generated JSON, official HTML slice, and executed notebook are committed as an explicit
+Iteration 1 archive. Normal ignore rules remain in place to prevent accidental churn from
+future runs; replacing the archive should be a deliberate reviewed change.
 
 ## 10. Reading results responsibly
 
@@ -336,11 +354,17 @@ Do not infer:
 ├── README.md                         quick start and experiment contract
 ├── understanding.md                  detailed conceptual/code walkthrough
 ├── changes_log.md                    versioned history and fixes
+├── artifacts/
+│   ├── qwen_validation.json          archived numerical validation report
+│   └── qwen_ascii_face_slice.html    official interactive position × layer slice
 ├── notebooks/
-│   └── qwen_official_jlens.ipynb     executable Colab GPU experiment
+│   ├── qwen_official_jlens.ipynb     executable Colab GPU experiment
+│   └── qwen_official_jlens_output.ipynb  archived executed notebook
+├── visualizations/
+│   └── jlens-concept-atlas.html      evidence-grounded conceptual explainer
 ├── tests/
 │   └── test_notebook.py              structural regression contract
-└── .gitignore                        excludes generated artifacts/caches
+└── .gitignore                        prevents accidental future output churn
 ```
 
 ## 13. Next steps after official-library validation

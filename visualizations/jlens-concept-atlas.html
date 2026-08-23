@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>J-Lens Concept Atlas</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a10;
+      --panel: #10141d;
+      --panel-2: #151b27;
+      --line: #283246;
+      --text: #edf3ff;
+      --muted: #98a7bd;
+      --cyan: #5de4d2;
+      --yellow: #ffd45c;
+      --magenta: #f783ff;
+      --blue: #75a7ff;
+      --red: #ff7979;
+      --green: #8be28b;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .38);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(93, 228, 210, .09), transparent 32rem),
+        radial-gradient(circle at 85% 10%, rgba(247, 131, 255, .08), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font: 15px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    button, select, input { font: inherit; }
+    button, select {
+      color: var(--text);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    button { cursor: pointer; padding: .65rem .9rem; }
+    button:hover { border-color: var(--cyan); }
+    button:focus-visible, select:focus-visible, input:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    button[aria-selected="true"] {
+      color: #06110f;
+      background: var(--cyan);
+      border-color: var(--cyan);
+    }
+    select { padding: .6rem 2rem .6rem .7rem; }
+
+    .shell { width: min(1240px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 54px; }
+    .eyebrow { color: var(--cyan); letter-spacing: .12em; text-transform: uppercase; font-size: .76rem; }
+    h1 { max-width: 860px; margin: .35rem 0 .65rem; font-size: clamp(2rem, 5vw, 4.6rem); line-height: .98; letter-spacing: -.06em; }
+    .lede { max-width: 830px; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: 1.05rem; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 24px; }
+    .view[hidden] { display: none; }
+    .view { animation: enter .22s ease-out; }
+    @keyframes enter { from { opacity: 0; transform: translateY(4px); } }
+
+    .view-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .55fr); gap: 24px; align-items: end; margin-bottom: 18px; }
+    .view-head h2 { margin: 0 0 .35rem; font-size: clamp(1.3rem, 3vw, 2.1rem); letter-spacing: -.035em; }
+    .view-head p { margin: 0; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; }
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; align-items: end; }
+    .field { display: grid; gap: 5px; color: var(--muted); font-size: .78rem; }
+    .layer-control { min-width: 210px; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); }
+
+    .stage {
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(21, 27, 39, .86), rgba(11, 14, 21, .92));
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .stage-title { padding: 13px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .78rem; }
+    .transport { display: grid; grid-template-columns: 1fr 1.24fr 1.24fr; min-height: 480px; }
+    .transport > * { min-width: 0; padding: 26px; }
+    .transport > * + * { border-left: 1px solid var(--line); }
+    .residual { display: grid; place-content: center; text-align: center; position: relative; }
+    .orb {
+      width: 150px; aspect-ratio: 1; margin: 0 auto 22px; border-radius: 50%;
+      display: grid; place-items: center; color: var(--text); font-size: 1.05rem;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255,255,255,.2), transparent 18%),
+        conic-gradient(from 210deg, var(--blue), var(--magenta), var(--cyan), var(--blue));
+      box-shadow: 0 0 0 12px rgba(117,167,255,.05), 0 0 70px rgba(117,167,255,.2);
+    }
+    .formula { color: var(--muted); }
+    .branch { position: relative; display: flex; flex-direction: column; }
+    .branch h3 { margin: 0 0 5px; font-size: 1rem; }
+    .branch .equation { color: var(--muted); min-height: 48px; }
+    .branch.jlens { box-shadow: inset 0 3px 0 var(--cyan); }
+    .branch.logit { box-shadow: inset 0 3px 0 var(--yellow); }
+    .operator {
+      margin: 22px 0; min-height: 88px; border: 1px dashed var(--line); border-radius: 12px;
+      display: grid; place-content: center; text-align: center; color: var(--muted);
+    }
+    .jlens .operator { border-color: rgba(93,228,210,.6); color: var(--cyan); }
+    .readout-label { color: var(--muted); font-size: .78rem; margin-bottom: 9px; }
+    .tokens { display: flex; flex-wrap: wrap; gap: 7px; }
+    .token { border: 1px solid var(--line); border-radius: 7px; padding: .35rem .52rem; background: rgba(255,255,255,.025); }
+    .token:first-child { border-color: currentColor; }
+    .jlens .token:first-child { color: var(--cyan); }
+    .logit .token:first-child { color: var(--yellow); }
+    .truthline { margin-top: auto; padding-top: 22px; color: var(--muted); font-size: .78rem; }
+    .truthline strong { color: var(--text); font-weight: 500; }
+
+    .braid-wrap { padding: 20px 18px 10px; }
+    #braid { display: block; width: 100%; min-height: 620px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 18px; padding: 0 18px 18px; color: var(--muted); font-size: .78rem; }
+    .legend span::before { content: ""; display: inline-block; width: 20px; height: 2px; margin-right: 7px; vertical-align: middle; background: currentColor; }
+    .legend .j { color: var(--cyan); }
+    .legend .l { color: var(--yellow); }
+
+    .causal { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr); }
+    .causal > * { padding: 26px; min-width: 0; }
+    .causal > * + * { border-left: 1px solid var(--line); }
+    .prompt-box { color: var(--muted); border-left: 3px solid var(--blue); padding: 12px 15px; background: rgba(117,167,255,.06); white-space: pre-wrap; }
+    .timeline { margin: 30px 0 10px; display: grid; grid-template-columns: 1fr 72px 1fr; align-items: center; gap: 12px; }
+    .time-node { min-height: 165px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
+    .time-node.good { border-color: rgba(93,228,210,.6); }
+    .time-node .index { color: var(--muted); font-size: .78rem; }
+    .time-node strong { display: block; margin: 12px 0; font-size: 1.05rem; font-weight: 500; }
+    .arrow { color: var(--muted); text-align: center; font-size: 1.6rem; }
+    .prediction { color: var(--cyan); }
+    .wrong { color: var(--red); }
+    .layer-readout h3 { margin-top: 0; }
+    .rank-list { list-style: none; margin: 18px 0 0; padding: 0; counter-reset: rank; }
+    .rank-list li { counter-increment: rank; display: grid; grid-template-columns: 30px 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .rank-list li::before { content: counter(rank, decimal-leading-zero); color: var(--muted); }
+    .caveat { margin-top: 18px; color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .86rem; }
+
+    .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; }
+    .note { padding: 15px; border-top: 1px solid var(--line); color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .84rem; }
+    .note strong { display: block; color: var(--text); font-family: ui-monospace, monospace; font-weight: 500; margin-bottom: 4px; }
+    footer { margin-top: 28px; color: var(--muted); font-size: .75rem; }
+    footer code { color: var(--text); }
+
+    @media (max-width: 850px) {
+      .view-head { grid-template-columns: 1fr; }
+      .controls { justify-content: flex-start; }
+      .transport { grid-template-columns: 1fr; }
+      .transport > * + * { border-left: 0; border-top: 1px solid var(--line); }
+      .causal { grid-template-columns: 1fr; }
+      .causal > * + * { border-left: 0; border-top: 1px solid var(--line); }
+      .notes { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 20px, 1240px); padding-top: 24px; }
+      .transport > *, .causal > * { padding: 18px; }
+      .timeline { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="eyebrow">Qwen/Qwen3.5-4B · official n=1,000 lens · observed run</div>
+    <h1>J-Lens is a transport, not a label maker.</h1>
+    <p class="lede">Three linked views separate the mechanism, the observed depth profile, and the causal indexing rule. Every ranked token and overlap is computed from the committed Iteration 1 output.</p>
+
+    <nav class="tabs" aria-label="Concept views">
+      <button type="button" data-view="transport" aria-selected="true">01 · transport</button>
+      <button type="button" data-view="emergence" aria-selected="false">02 · emergence braid</button>
+      <button type="button" data-view="causal" aria-selected="false">03 · causal horizon</button>
+    </nav>
+
+    <section class="view" id="view-transport">
+      <header class="view-head">
+        <div>
+          <h2>Same residual. One principled transform in the readout path.</h2>
+          <p>The control keeps the residual unchanged; J-Lens applies the fitted mean Jacobian transport before the same final norm and unembedding.</p>
+        </div>
+        <div class="controls">
+          <label class="field">prompt family<select class="prompt-select"></select></label>
+          <label class="field layer-control">layer <span class="layer-value">24</span><input class="layer-range" type="range" min="0" max="3" step="1" value="2"></label>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="stage-title" id="transport-state">Residual state at layer 24, final supplied position</div>
+        <div class="transport">
+          <div class="residual">
+            <div class="orb">h<sub>ℓ,p</sub></div>
+            <div>internal residual</div>
+            <div class="formula">same vector enters both branches</div>
+          </div>
+          <article class="branch jlens">
+            <h3>J-Lens branch</h3>
+            <div class="equation">W<sub>U</sub> · N(J<sub>ℓ</sub> h<sub>ℓ,p</sub>)</div>
+            <div class="operator">apply fitted mean transport<br><strong>J<sub>ℓ</sub></strong></div>
+            <div class="readout-label">observed top tokens</div>
+            <div class="tokens" id="j-tokens"></div>
+            <div class="truthline"><strong id="branch-overlap">50%</strong> top-10 overlap with the matched logit-lens control</div>
+          </article>
+          <article class="branch logit">
+            <h3>Logit-lens control</h3>
+            <div class="equation">W<sub>U</sub> · N(h<sub>ℓ,p</sub>)</div>
+            <div class="operator">identity path<br><strong>I</strong></div>
+            <div class="readout-label">observed top tokens</div>
+            <div class="tokens" id="l-tokens"></div>
+            <div class="truthline">same prompt, position, layer, final norm, and unembedding</div>
+          </article>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="note"><strong>What changes</strong>The learned transport estimates how this residual tends to influence later residuals.</div>
+        <div class="note"><strong>What stays controlled</strong>Activation, layer, position, final norm, and vocabulary readout remain matched.</div>
+        <div class="note"><strong>What it does not prove</strong>A readable token is descriptive evidence, not proof that the concept caused the answer.</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-emergence" hidden>
+      <header class="view-head">
+        <div>
+          <h2>Semantic convergence is a depth-dependent trajectory.</h2>
+          <p>Each braid compares how much the J-Lens and logit-lens top-10 sets overlap the ordinary model’s final top-10. Labels show the J-Lens top token.</p>
+        </div>
+      </header>
+      <div class="stage">
+        <div class="stage-title">Overlap with final model top-10 · set intersection ÷ 10 · not confidence or accuracy</div>
+        <div class="braid-wrap"><svg id="braid" role="img" aria-labelledby="braid-title braid-desc"><title id="braid-title">J-Lens semantic emergence braid</title><desc id="braid-desc">Five prompt families comparing J-Lens and logit-lens top-ten overlap with the final model across layers 8, 16, 24 and 30.</desc></svg></div>
+        <div class="legend"><span class="j">J-Lens → final-model overlap</span><span class="l">logit lens → final-model overlap</span></div>
+      </div>
+      <div class="notes">
+        <div class="note"><strong>Early</strong>Both readouts can be noisy or symbol-heavy; decoding is not yet semantically stable.</div>
+        <div class="note"><strong>Middle</strong>J-Lens can reveal answer-relevant families before the ordinary final readout is available.</div>
+        <div class="note"><strong>Late</strong>Both branches increasingly resemble imminent output, so their distinction naturally narrows.</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-causal" hidden>
+      <header class="view-head">
+        <div>
+          <h2>The readout must stand on the causal horizon.</h2>
+          <p>At position −1, the model predicts the first unseen token. Position −2 predicts a token already supplied by the prompt and can pass parity while answering the wrong question.</p>
+        </div>
+        <div class="controls">
+          <label class="field">prompt family<select class="prompt-select"></select></label>
+          <label class="field layer-control">J-Lens layer <span class="layer-value">24</span><input class="layer-range" type="range" min="0" max="3" step="1" value="2"></label>
+        </div>
+      </header>
+      <div class="stage causal">
+        <div>
+          <div class="prompt-box" id="prompt-text"></div>
+          <div class="timeline">
+            <div class="time-node">
+              <div class="index">read residual at position −2</div>
+              <strong>predict supplied final token</strong>
+              <span class="wrong">teacher-forced reconstruction</span>
+            </div>
+            <div class="arrow" aria-hidden="true">→</div>
+            <div class="time-node good">
+              <div class="index">read residual at position −1</div>
+              <strong>predict first unseen token</strong>
+              <span class="prediction" id="model-prediction"></span>
+            </div>
+          </div>
+          <p class="caveat">The sequence is causal: logits at index <em>i</em> predict token <em>i + 1</em>. The experiment fixes <code>READOUT_POSITION = -1</code> for J-Lens, its control, and direct-model parity.</p>
+        </div>
+        <aside class="layer-readout">
+          <h3 id="rank-heading">J-Lens at layer 24</h3>
+          <div class="readout-label">top candidates for the same unseen continuation</div>
+          <ol class="rank-list" id="rank-list"></ol>
+          <p class="caveat">Decoded vocabulary ranks summarize a direction after transport. They are not a transcript of discrete words inside the residual stream.</p>
+        </aside>
+      </div>
+    </section>
+
+    <footer>Data: <code>artifacts/qwen_validation.json</code> · model SHA <code>851bf6e8…cd0a</code> · lens SHA <code>16a01f30…4d5a</code> · readout position <code>−1</code></footer>
+  </main>
+
+  <script>
+    const layers = [8, 16, 24, 30];
+    const prompts = {
+      multihop: {label: "multihop", text: "Fact: The currency used in the country shaped like a boot is", model: [" the"," called"," a"," Euro"," not"," "," known"," Euros"," used"," Italy"], layers: {
+        8:{j:[" ...","...","[newline]"," [...]","[slash]"],l:["влаж"," litri"," Moms","واس","%@"],o:0},
+        16:{j:["\\n",".\\","____","\\\"","?\\"," ___",".\\\"","___"," ____","________"],l:["原件及复印件","ште"," fond","变更为","egot"," thinly","otin","ất","aren","hq"],o:0},
+        24:{j:[" currency"," dollars"," euros"," Dollars"," Dollar"," dollar","货币"," Currency"," USD"," euro"],l:[" called","called","currency"," Dollars"," fiat","บาท","폐","叫","coins"," euros"],o:.2},
+        30:{j:[" Euro"," the"," Euros"," euros"," euro"," called"," EUR"," EURO"," €"," known"],l:[" called"," the"," Euros"," Euro"," known"," euros"," commonly"," pounds","ユー"," NOT"],o:.6}
+      }},
+      multilingual: {label: "multilingual", text: "Translate into French: The small red house is", model:[" in"," the"," next"," on"," a"," my"," located"," not"," at"," very"], layers:{
+        8:{j:[" ...","..."," [...]","'","[newline]"],l:["诉","世外","omer","很难","naudoj"],o:0},
+        16:{j:["____","___"," ____"," ___","________"," ______","_____","__"," _____","\\\""],l:[" ملك","今天早上","蕊"," отно","brand","bro","δει","涨势","____","_lin"],o:.1},
+        24:{j:[" beautiful"," located"," nice"," ours"," inside"," upstairs"," houses"," situated"," called"," yours"],l:[" theirs"," ours"," yours","будьте"," neighbour","integrazione","fault","我家","很好吃"," hers"],o:.2},
+        30:{j:[" next"," beautiful"," near"," located"," very"," nice"," mine"," my"," situated"," ours"],l:[" ours"," next"," theirs"," mine"," yours"," located"," hers","ours"," near","next"],o:.5}
+      }},
+      typo: {label: "typo recovery", text: "Correct the typo and complete: The capital of Frnace is", model:[" Paris"," ______"," __","\\n\\n","..."," ___"," ____"," P"," ..."," in"], layers:{
+        8:{j:[" ...","..."," [...]","......","\\n\\n","\\n","...'"," ...\\"," \\n","(...)"],l:["的确","รม"," množ"," indeed","UPDATED","{name","ADDRESS","rokes",".hxx","веден"],o:0},
+        16:{j:["____"," ____"," ______","...","________","___"," _____"," ..."," ___","_____"],l:["____","obili","FillColor","places","embra","bro"," integri","ؤل"," integra"," Tijd"],o:.1},
+        24:{j:[" Paris","____","...","Paris"," France","\\n\\n","...\\","___"," ___"," ____"],l:["____","urin","...\\","bourg","Paris","巴黎",".........","...)","...**","located"],o:.3},
+        30:{j:[" Paris"," ____"," Pari"," ______"," __"," ___"," _____","____"," London"," ________"],l:[" Paris"," __"," ___"," ______","____"," ____","Paris"," located"," __________________","________"],o:.6}
+      }},
+      ordering: {label: "ordering", text: "Put in increasing order: 9, 2, 5. The first number is", model:[" "," the"," __"," a"," ______"," ____","\\n\\n",":"," ___"," in"], layers:{
+        8:{j:[".",",","'",";","·"," '"," ...","...",":","'."],l:[" therefore"," theirs","显然"," yours","%A","_queues"," indeed"," hereby","○○","ache"],o:0},
+        16:{j:["____",".","________"," ______"," ____",".\\","?"," _____"," ________","\\\""],l:["�"," therefore","○○","uri","俑"," ovviamente","enna","din","osten","_solution"],o:0},
+        24:{j:["___"," _____"," ____"," ___","_____"," ________","____","________"," ______"," __"],l:[" _______,"," __________________",".............."," _____","...\\"," ...，","...........","akest","................................","........................"],o:.1},
+        30:{j:[" __"," ____"," ___"," ______"," _____"," the"," ________"," smallest"," blank"," __________________"],l:[" __"," ____"," greater"," least"," greatest"," ______"," _______,"," considered"," smallest"," always"],o:.4}
+      }},
+      ascii_face: {label: "ASCII face", text: "This is a face:\\n  ^  ^\\n   ^\\n  ___\\nThe middle ^ is the", model:[" nose"," mouth"," chin"," eyes"," eye"," face"," forehead"," head"," top"," tip"], layers:{
+        8:{j:["[double newline]","[slash]",".","[space + quote]"],l:["苗","ore",".googleapis","请联系删除","小编为大家整理的"],o:0},
+        16:{j:["[escaped quote]","[space + quote]"," __"," ___","____"],l:["це","ornado","枢","ild","ropa"],o:0},
+        24:{j:[" nose"," eyes","鼻子"," noses"," forehead"," Nose"," nasal"," mouth","nose"," ears"],l:["鼻子","nas"," nose"," nasal"," eyes","onas","鼻梁"," forehead","fac","鼻"],o:.5},
+        30:{j:[" nose"," mouth"," nasal"," chin"," forehead"," neck"," Nose"," eye"," eyes"," nostr"],l:[" nose","nose"," chin"," mouth","鼻子"," nasal"," eyes"," Nose","鼻梁"," forehead"],o:.7}
+      }}
+    };
+
+    let activePrompt = "ascii_face";
+    let activeLayerIndex = 2;
+    const clean = value => value.replaceAll("\\n", "↵").replaceAll("\\", "∖").trim() || "␠";
+    const overlap = (a, b) => a.filter(token => new Set(b).has(token)).length / 10;
+
+    document.querySelectorAll(".prompt-select").forEach(select => {
+      Object.entries(prompts).forEach(([key, item]) => select.add(new Option(item.label, key)));
+      select.value = activePrompt;
+      select.addEventListener("change", () => { activePrompt = select.value; syncControls(); renderAll(); });
+    });
+    document.querySelectorAll(".layer-range").forEach(range => {
+      range.value = activeLayerIndex;
+      range.addEventListener("input", () => { activeLayerIndex = Number(range.value); syncControls(); renderAll(); });
+    });
+    document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-selected", String(b === button)));
+      document.querySelectorAll(".view").forEach(view => view.hidden = view.id !== `view-${button.dataset.view}`);
+      if (button.dataset.view === "emergence") drawBraid();
+    }));
+
+    function syncControls() {
+      document.querySelectorAll(".prompt-select").forEach(select => select.value = activePrompt);
+      document.querySelectorAll(".layer-range").forEach(range => range.value = activeLayerIndex);
+      document.querySelectorAll(".layer-value").forEach(label => label.textContent = layers[activeLayerIndex]);
+    }
+
+    function tokenMarkup(items) {
+      return items.slice(0, 5).map(token => `<span class="token">${escapeHtml(clean(token))}</span>`).join("");
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>\"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[char]);
+    }
+
+    function renderTransport() {
+      const layer = layers[activeLayerIndex];
+      const row = prompts[activePrompt].layers[layer];
+      document.getElementById("transport-state").textContent = `${prompts[activePrompt].label} · residual at layer ${layer} · final supplied position`;
+      document.getElementById("j-tokens").innerHTML = tokenMarkup(row.j);
+      document.getElementById("l-tokens").innerHTML = tokenMarkup(row.l);
+      document.getElementById("branch-overlap").textContent = `${Math.round(row.o * 100)}%`;
+    }
+
+    function renderCausal() {
+      const layer = layers[activeLayerIndex];
+      const prompt = prompts[activePrompt];
+      document.getElementById("prompt-text").textContent = prompt.text;
+      document.getElementById("model-prediction").textContent = `ordinary model top candidate: ${clean(prompt.model[0])}`;
+      document.getElementById("rank-heading").textContent = `J-Lens at layer ${layer}`;
+      document.getElementById("rank-list").innerHTML = prompt.layers[layer].j.slice(0, 7).map(token => `<li>${escapeHtml(clean(token))}</li>`).join("");
+    }
+
+    function drawBraid() {
+      const svg = document.getElementById("braid");
+      const width = Math.max(320, svg.clientWidth || 1000);
+      const compact = width < 760;
+      const left = compact ? 82 : 150;
+      const right = compact ? 18 : 34;
+      const rowH = compact ? 124 : 118;
+      const top = 52;
+      const height = top + Object.keys(prompts).length * rowH + 34;
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.style.height = `${height}px`;
+      const x = layer => left + (layers.indexOf(layer) / (layers.length - 1)) * (width - left - right);
+      const y = (row, value) => top + row * rowH + 72 - value * 82;
+      const css = getComputedStyle(document.documentElement);
+      const colors = {j: css.getPropertyValue("--cyan").trim(), l: css.getPropertyValue("--yellow").trim(), line: css.getPropertyValue("--line").trim(), muted: css.getPropertyValue("--muted").trim(), text: css.getPropertyValue("--text").trim()};
+      const parts = [];
+      layers.forEach(layer => parts.push(`<text x="${x(layer)}" y="22" text-anchor="middle" fill="${colors.muted}" font-size="12">L${layer}</text>`));
+      Object.entries(prompts).forEach(([key, prompt], rowIndex) => {
+        const baseY = top + rowIndex * rowH + 72;
+        parts.push(`<line x1="${left}" x2="${width-right}" y1="${baseY}" y2="${baseY}" stroke="${colors.line}"/>`);
+        parts.push(`<text x="10" y="${baseY-39}" fill="${colors.text}" font-size="13">${escapeHtml(prompt.label)}</text>`);
+        parts.push(`<text x="10" y="${baseY-21}" fill="${colors.muted}" font-size="11">overlap with final</text>`);
+        const jPoints = layers.map(layer => [x(layer), y(rowIndex, overlap(prompt.layers[layer].j, prompt.model))]);
+        const lPoints = layers.map(layer => [x(layer), y(rowIndex, overlap(prompt.layers[layer].l, prompt.model))]);
+        const path = points => points.map((point, index) => `${index ? "L" : "M"}${point[0]},${point[1]}`).join(" ");
+        parts.push(`<path d="${path(jPoints)}" fill="none" stroke="${colors.j}" stroke-width="3"/>`);
+        parts.push(`<path d="${path(lPoints)}" fill="none" stroke="${colors.l}" stroke-width="2" opacity=".78"/>`);
+        layers.forEach((layer, index) => {
+          const jVal = overlap(prompt.layers[layer].j, prompt.model);
+          const lVal = overlap(prompt.layers[layer].l, prompt.model);
+          parts.push(`<circle cx="${jPoints[index][0]}" cy="${jPoints[index][1]}" r="5" fill="${colors.j}"><title>J-Lens L${layer}: ${Math.round(jVal*100)}% overlap; top token ${clean(prompt.layers[layer].j[0])}</title></circle>`);
+          parts.push(`<rect x="${lPoints[index][0]-4}" y="${lPoints[index][1]-4}" width="8" height="8" fill="${colors.l}"><title>Logit lens L${layer}: ${Math.round(lVal*100)}% overlap; top token ${clean(prompt.layers[layer].l[0])}</title></rect>`);
+          const labelY = Math.max(top + rowIndex * rowH + 12, jPoints[index][1] - 11);
+          parts.push(`<text x="${jPoints[index][0]}" y="${labelY}" text-anchor="middle" fill="${colors.text}" font-size="11">${escapeHtml(clean(prompt.layers[layer].j[0]).slice(0, compact ? 8 : 13))}</text>`);
+        });
+      });
+      svg.innerHTML = `<title id="braid-title">J-Lens semantic emergence braid</title><desc id="braid-desc">Five prompt families comparing J-Lens and logit-lens top-ten overlap with the final model across four layers.</desc>${parts.join("")}`;
+    }
+
+    function renderAll() { renderTransport(); renderCausal(); drawBraid(); }
+    const resizeObserver = new ResizeObserver(() => { if (!document.getElementById("view-emergence").hidden) drawBraid(); });
+    resizeObserver.observe(document.getElementById("braid"));
+    syncControls();
+    renderAll();
+  </script>
+</body>
+</html>

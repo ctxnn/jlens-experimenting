@@ -9,8 +9,29 @@ its experiment contract:
   documentation.
 - **PATCH:** correction that preserves the intended experiment design.
 
-The repository is currently pre-1.0 because the official GPU experiment has not yet been
-archived with committed numerical results.
+The repository is currently pre-1.0 because it contains one qualitative validation run,
+not a broader benchmark or independent lens fit.
+
+## [0.4.0] — 2026-08-24
+
+### Added
+
+- Archived the verified Iteration 1 JSON report, official interactive slice, and executed
+  output notebook in source control.
+- Added `visualizations/jlens-concept-atlas.html`, a self-contained three-view explainer:
+  Jacobian transport versus the identity control, semantic emergence through depth, and
+  the causal `-1` readout horizon.
+- Grounded the atlas in the committed Qwen run and labeled top-10 overlap as set agreement,
+  never as confidence, accuracy, or causal proof.
+- Added documentation and structural coverage for the visualization contract.
+
+### Verified
+
+- Manual Chrome QA exercised three independent position/layer selections in the official
+  slice. Matrix highlights, selected tokens, pins, heatmap markers, and both rank charts
+  remained synchronized.
+- The concept atlas parses without JavaScript syntax errors and is checked at desktop and
+  mobile viewport sizes.
 
 ## [0.3.3] — 2026-08-23
 

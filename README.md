@@ -60,6 +60,9 @@ silently invalidating the pairing.
 - A shareable `artifacts/qwen_ascii_face_slice.html` visualization.
 - An `artifacts/qwen_validation.json` report containing the readout position and its
   next-token semantics, final-output parity errors, and J-Lens/logit-lens top-10 overlap.
+- A purpose-built [`visualizations/jlens-concept-atlas.html`](visualizations/jlens-concept-atlas.html)
+  with three linked explanations: the Jacobian transport, semantic emergence through
+  depth, and the causal readout horizon.
 
 The slice uses prompt positions as columns and layers as rows. Clicking a cell pins its
 top token and exposes full-vocabulary rank trajectories across positions and depth. This
@@ -79,11 +82,19 @@ A clean Google Colab CLI 0.6.0 run completed on a Tesla T4 on 2026-08-23:
 - the saved output notebook contained zero error cells; and
 - both the JSON report and 1,823,422-byte interactive HTML artifact were generated.
 
-The HTML title and expected interactive markup were validated statically. The local
-browser sandbox blocked both localhost and `file://` rendering, so manual interaction
-with the rendered grid remains an explicit follow-up rather than a claimed pass. Generated
-artifacts and the executed output notebook remain gitignored; this repository records the
-verification summary, not a committed result archive.
+The HTML title and expected interactive markup were validated statically. Manual Chrome
+QA then exercised three distinct position/layer selections and confirmed that the matrix
+highlight, selected token, pin list, heatmap marker, and both rank charts remained
+synchronized. The JSON report, official interactive slice, and executed output notebook
+are committed as the Iteration 1 result archive despite the normal ignore rules for future
+generated runs.
+
+The concept atlas is intentionally explanatory rather than a replacement for the official
+slice. Its transport view keeps the J-Lens and matched logit-lens paths separate; its
+emergence braid computes overlap against the ordinary model's final top-10; and its causal
+horizon makes the `-1` versus `-2` indexing distinction visible. Control characters are
+normalized only for display, and the atlas labels overlap as set agreement rather than
+confidence or accuracy.
 
 ## Why this is a justified Qwen test
 

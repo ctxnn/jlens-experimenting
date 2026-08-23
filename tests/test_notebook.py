@@ -79,6 +79,7 @@ class DocumentationContractTest(unittest.TestCase):
         cls.understanding = Path("understanding.md").read_text()
         cls.change_log = Path("changes_log.md").read_text()
         cls.readme = Path("README.md").read_text()
+        cls.atlas = Path("visualizations/jlens-concept-atlas.html").read_text()
 
     def test_readme_links_long_form_documentation(self):
         self.assertIn("[`understanding.md`](understanding.md)", self.readme)
@@ -103,19 +104,28 @@ class DocumentationContractTest(unittest.TestCase):
             "Failure modes and troubleshooting",
             '"resolved_model_revision"',
             "Iteration 1 live verification",
-            "Interactive visual QA therefore",
-            "remains open and is not represented as passed",
+            "This closes the visual-QA follow-up",
+            "committed as an explicit",
         )
         for fragment in required:
             self.assertIn(fragment, self.understanding)
 
     def test_change_log_records_versions_and_position_fix(self):
-        for version in ("[0.3.3]", "[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
+        for version in ("[0.4.0]", "[0.3.3]", "[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
             self.assertIn(version, self.change_log)
         self.assertIn("teacher-forced reconstruction", self.change_log)
         self.assertIn("positions=[-2]", self.change_log)
         self.assertIn("model_revision", self.change_log)
         self.assertIn("lens_source_ref", self.change_log)
+
+    def test_concept_atlas_preserves_scientific_distinctions(self):
+        self.assertIn("visualizations/jlens-concept-atlas.html", self.readme)
+        self.assertIn("J-Lens is a transport, not a label maker", self.atlas)
+        self.assertIn("W<sub>U</sub> · N(J<sub>ℓ</sub> h<sub>ℓ,p</sub>)", self.atlas)
+        self.assertIn("W<sub>U</sub> · N(h<sub>ℓ,p</sub>)", self.atlas)
+        self.assertIn("not confidence or accuracy", self.atlas)
+        self.assertIn("READOUT_POSITION = -1", self.atlas)
+        self.assertIn("not proof that the concept caused the answer", self.atlas)
 
 
 if __name__ == "__main__":
