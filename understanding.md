@@ -1,7 +1,7 @@
 # Understanding the Official J-Lens × Qwen Experiment
 
-> **Document version:** 1.0  
-> **Experiment version:** 0.3.0  
+> **Document version:** 1.0
+> **Experiment version:** 0.3.1
 > **Scope:** applying and validating Anthropic's published Jacobian lens; no lens fitting
 > or from-scratch Jacobian implementation is performed in this repository.
 
@@ -27,12 +27,19 @@ claim that five hand-written prompts measure general performance.
 | Component | Pinned value | Reason |
 |---|---|---|
 | Reference code | `anthropics/jacobian-lens@581d398613e5602a5af361e1c34d3a92ea82ba8e` | Avoid behavior changing underneath the experiment. |
-| Model | `Qwen/Qwen3.5-4B` | Exact architecture associated with the published lens. |
+| Model | `Qwen/Qwen3.5-4B` | Architecture named by the published lens fit metadata. |
+| Model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` | Immutable model and tokenizer snapshot; prevents default-branch drift. |
 | Lens repository | `neuronpedia/jacobian-lens` | Public host used by the official walkthrough. |
 | Lens revision | `qwen-n1000` | Selects the published 1,000-prompt artifact set. |
 | Lens file | `qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt` | Matched width, depth, weights, and layer indexing. |
 | Runtime dtype | `torch.bfloat16` for the model | Practical GPU inference dtype; lens readouts are promoted to float for comparisons. |
 | Readout position | `-1` | Final supplied token; its causal logits predict the first unseen token. |
+
+The published fit configuration names the model but does not record its Hugging Face
+revision. The fit was generated on 2026-06-13; the pinned Qwen revision was the repository
+HEAD from 2026-03-02 and predates that fit. Pinning it is therefore a provenance inference
+from the available primary metadata, not a claim that the lens file cryptographically
+attests the model SHA. Future artifacts should record this SHA at fit time.
 
 A Jacobian matrix is architecture- and checkpoint-specific. A lens from another Qwen
 size cannot be substituted: even if a matrix could be loaded, its dimensions, layers,
@@ -115,7 +122,9 @@ a slow or misleading partial run.
 
 ### Cell group 2 — matched model and lens
 
-The notebook loads Qwen in bfloat16 on CUDA, loads the matching tokenizer, wraps the Hugging
+The notebook loads Qwen in bfloat16 on CUDA and loads its tokenizer with the same immutable
+Hugging Face revision. It asserts the resolved model configuration commit equals
+`MODEL_REVISION`, prints that value, and later records it in the JSON report. It then wraps the Hugging
 Face model using `jlens.from_hf`, then downloads the published lens using
 `JacobianLens.from_pretrained`. The wrapper locates the transformer blocks, final norm,
 and LM head needed for official activation capture and readout.
@@ -192,6 +201,7 @@ Conceptual schema:
 ```json
 {
   "model": "Qwen/Qwen3.5-4B",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
   "lens_revision": "qwen-n1000",
   "readout_position": -1,
   "readout_semantics": "logits after the final supplied token predict the first unseen token",
@@ -225,7 +235,7 @@ experiment output, so `artifacts/` is gitignored rather than committed.
 | Gate | Mechanism | Proves | Does not prove |
 |---|---|---|---|
 | Dependency | immutable Git commit | known library source | artifact correctness |
-| Pairing | fixed model/lens identifiers | intended checkpoint pairing | semantic usefulness |
+| Pairing | fixed model/lens identifiers and immutable model/tokenizer SHA | reproducible intended pairing without default-branch drift | cryptographic proof of the fitter's model SHA |
 | CUDA | runtime assertion | suitable execution device exists | enough VRAM |
 | Position | shared `READOUT_POSITION=-1` plus tests | next unseen token is targeted | correct prompt design |
 | Parity | `torch.allclose` API vs HF logits | adapter final readout agrees | J-Lens is meaningful |
@@ -243,7 +253,7 @@ inspect its distribution rather than treating a single threshold as universally 
 1. Open `notebooks/qwen_official_jlens.ipynb` in Google Colab.
 2. Select an L4 or A100 GPU runtime.
 3. Run cells from top to bottom without skipping installation or assertions.
-4. Confirm the printed GPU, model wrapper, and lens metadata are expected.
+4. Confirm the printed GPU, full model revision SHA, model wrapper, and lens metadata are expected.
 5. For every prompt, confirm the printed readout token is labeled as predicting the next
    unseen token.
 6. Confirm no parity assertion fails.

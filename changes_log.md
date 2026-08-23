@@ -12,6 +12,26 @@ its experiment contract:
 The repository is currently pre-1.0 because the official GPU experiment has not yet been
 archived with committed numerical results.
 
+## [0.3.1] — 2026-08-23
+
+### Fixed
+
+- Added `MODEL_REVISION = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"`.
+- Passed that immutable revision to both `AutoModelForCausalLM.from_pretrained` and
+  `AutoTokenizer.from_pretrained`.
+- Added a runtime assertion that the resolved model configuration commit matches the pin.
+- Recorded `model_revision` in `artifacts/qwen_validation.json`.
+- Documented the provenance limitation: the lens fit metadata names the model but omits
+  its revision, so the selected SHA is inferred from the model repository history and the
+  fit timestamp rather than attested inside the lens artifact.
+
+### Why this fix matters
+
+A mutable default Hugging Face revision could change model or tokenizer files while the
+published Jacobian remains fixed. Final-logit parity would still pass because both parity
+branches would use the same changed model. Pinning and reporting the full model SHA makes
+the run reproducible and prevents that silent model–lens mismatch.
+
 ## [0.3.0] — 2026-08-23
 
 ### Added

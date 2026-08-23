@@ -16,6 +16,13 @@ class NotebookContractTest(unittest.TestCase):
         self.assertIn("anthropics/jacobian-lens.git@581d398", self.source)
         self.assertIn("assert torch.cuda.is_available()", self.source)
 
+    def test_model_and_tokenizer_use_immutable_revision(self):
+        revision = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+        self.assertIn(f'MODEL_REVISION = "{revision}"', self.source)
+        self.assertEqual(self.source.count("revision=MODEL_REVISION"), 2)
+        self.assertIn("hf_model.config._commit_hash == MODEL_REVISION", self.source)
+        self.assertIn('"model_revision": MODEL_REVISION', self.source)
+
     def test_published_qwen_lens_without_fitting(self):
         self.assertIn('MODEL_NAME = "Qwen/Qwen3.5-4B"', self.source)
         self.assertIn("Qwen3.5-4B_jacobian_lens_n1000.pt", self.source)
@@ -60,7 +67,8 @@ class DocumentationContractTest(unittest.TestCase):
 
     def test_understanding_documents_experiment_contract(self):
         required = (
-            "Experiment version:** 0.3.0",
+            "Experiment version:** 0.3.1",
+            "Model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`",
             "READOUT_POSITION = -1",
             "```mermaid",
             "Generated artifacts and schema",
@@ -71,10 +79,11 @@ class DocumentationContractTest(unittest.TestCase):
             self.assertIn(fragment, self.understanding)
 
     def test_change_log_records_versions_and_position_fix(self):
-        for version in ("[0.3.0]", "[0.2.0]", "[0.1.0]"):
+        for version in ("[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
             self.assertIn(version, self.change_log)
         self.assertIn("teacher-forced reconstruction", self.change_log)
         self.assertIn("positions=[-2]", self.change_log)
+        self.assertIn("model_revision", self.change_log)
 
 
 if __name__ == "__main__":
