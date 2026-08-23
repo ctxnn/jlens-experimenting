@@ -16,12 +16,22 @@ class NotebookContractTest(unittest.TestCase):
         self.assertIn("anthropics/jacobian-lens.git@581d398", self.source)
         self.assertIn("assert torch.cuda.is_available()", self.source)
 
+    def test_all_cells_have_unique_stable_ids(self):
+        ids = [cell.get("id") for cell in self.notebook["cells"]]
+        self.assertEqual(len(ids), 11)
+        self.assertTrue(all(ids))
+        self.assertEqual(len(ids), len(set(ids)))
+
     def test_model_and_tokenizer_use_immutable_revision(self):
         revision = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
         self.assertIn(f'MODEL_REVISION = "{revision}"', self.source)
-        self.assertEqual(self.source.count("revision=MODEL_REVISION"), 2)
-        self.assertIn("hf_model.config._commit_hash == MODEL_REVISION", self.source)
+        self.assertEqual(self.source.count("revision=MODEL_REVISION"), 3)
+        self.assertIn("hf_hub_download(", self.source)
+        self.assertIn('resolved_config_path.parts.index("snapshots")', self.source)
+        self.assertIn("RESOLVED_MODEL_REVISION == MODEL_REVISION", self.source)
+        self.assertNotIn("_commit_hash", self.source)
         self.assertIn('"model_revision": MODEL_REVISION', self.source)
+        self.assertIn('"resolved_model_revision": RESOLVED_MODEL_REVISION', self.source)
 
     def test_lens_uses_immutable_revision(self):
         revision = "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a"
@@ -74,9 +84,16 @@ class DocumentationContractTest(unittest.TestCase):
         self.assertIn("[`understanding.md`](understanding.md)", self.readme)
         self.assertIn("[`changes_log.md`](changes_log.md)", self.readme)
 
+    def test_readme_documents_colab_cli_and_error_audit(self):
+        self.assertIn("colab exec -s jlens-qwen", self.readme)
+        self.assertIn('select(.output_type == "error")', self.readme)
+        self.assertIn("colab stop -s jlens-qwen", self.readme)
+        self.assertIn("## Iteration 1 verification", self.readme)
+        self.assertIn("maximum final-readout parity error was `0.03125`", self.readme)
+
     def test_understanding_documents_experiment_contract(self):
         required = (
-            "Experiment version:** 0.3.2",
+            "Experiment version:** 0.3.3",
             "Lens revision | `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a`",
             "Model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`",
             "READOUT_POSITION = -1",
@@ -84,12 +101,16 @@ class DocumentationContractTest(unittest.TestCase):
             "Generated artifacts and schema",
             "Validation gates and what each proves",
             "Failure modes and troubleshooting",
+            '"resolved_model_revision"',
+            "Iteration 1 live verification",
+            "Interactive visual QA therefore",
+            "remains open and is not represented as passed",
         )
         for fragment in required:
             self.assertIn(fragment, self.understanding)
 
     def test_change_log_records_versions_and_position_fix(self):
-        for version in ("[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
+        for version in ("[0.3.3]", "[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
             self.assertIn(version, self.change_log)
         self.assertIn("teacher-forced reconstruction", self.change_log)
         self.assertIn("positions=[-2]", self.change_log)

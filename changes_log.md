@@ -12,6 +12,39 @@ its experiment contract:
 The repository is currently pre-1.0 because the official GPU experiment has not yet been
 archived with committed numerical results.
 
+## [0.3.3] — 2026-08-23
+
+### Fixed
+
+- Replaced the runtime assertion on Transformers' private
+  `hf_model.config._commit_hash` field with a check of the immutable Hugging Face cache
+  path returned by `hf_hub_download`.
+- Recorded `resolved_model_revision` separately from the requested `model_revision` in
+  `artifacts/qwen_validation.json`.
+- Added regression coverage that rejects `_commit_hash` and requires the resolved
+  snapshot SHA check.
+- Added stable, unique IDs to every notebook cell and regression coverage for them,
+  removing the `MissingIDFieldWarning` emitted by the real Colab CLI run and preventing
+  a future `nbformat` validation failure.
+- Replaced the stale browser-only Colab handoff with the tested CLI runbook, including
+  L4-to-T4 fallback, clean-kernel reruns, runtime cleanup, and an explicit audit for error
+  outputs because CLI notebook execution can return exit code 0 after a cell exception.
+- Added documentation regression coverage for the CLI command and error audit.
+- Ignored the CLI-generated `notebooks/*_output.ipynb` files so validation evidence can
+  remain local without polluting source-control status.
+- Documented the Iteration 1 T4 run: five prompt families, zero output-notebook error
+  cells, matching requested/resolved model revisions, maximum parity error `0.03125`, and
+  both expected artifacts generated.
+- Kept interactive browser rendering explicitly open after local URL security blocked it.
+
+### Why this fix matters
+
+The first real Colab CLI run loaded the pinned model successfully, but Qwen's resolved
+configuration exposed `_commit_hash = None`. The old assertion therefore failed because
+it depended on private Transformers metadata, not because the requested snapshot drifted.
+The Hugging Face cache path includes `snapshots/<resolved-sha>/...`, so checking that value
+verifies the pin using the artifact resolver that actually served the configuration.
+
 ## [0.3.2] — 2026-08-23
 
 ### Fixed

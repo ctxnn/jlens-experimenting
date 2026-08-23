@@ -11,9 +11,37 @@ scientific fixes are recorded in [`changes_log.md`](changes_log.md).
 ## Run in Google Colab
 
 Open [`notebooks/qwen_official_jlens.ipynb`](notebooks/qwen_official_jlens.ipynb), select
-**Runtime → Change runtime type → GPU** (L4/A100 preferred), and run every cell. This
-host has no CUDA device or supported Colab CLI, so the notebook is the reproducible GPU
-handoff.
+**Runtime → Change runtime type → GPU** (L4/A100 preferred), and run every cell.
+
+For a headless run with the authenticated Google Colab CLI:
+
+```bash
+colab new -s jlens-qwen --gpu L4
+colab exec -s jlens-qwen -f notebooks/qwen_official_jlens.ipynb --timeout 1800
+```
+
+If the account has no L4 entitlement, use `--gpu T4`. Start from a fresh kernel when
+re-running the notebook because a previous 4B model instance can retain enough GPU memory
+to make the next load fail:
+
+```bash
+colab restart-kernel -s jlens-qwen
+```
+
+The current CLI can save an output notebook and return exit code 0 even when an individual
+cell contains an exception. Audit the saved notebook explicitly before treating the run as
+successful:
+
+```bash
+jq '[.cells[].outputs[]? | select(.output_type == "error")] | length' \
+  notebooks/qwen_official_jlens_output.ipynb
+```
+
+A passing run prints `0`. Release the runtime when validation is complete:
+
+```bash
+colab stop -s jlens-qwen
+```
 
 The notebook pins the reference library to commit
 `581d398613e5602a5af361e1c34d3a92ea82ba8e` and pins both model and tokenizer files to
@@ -37,6 +65,25 @@ The slice uses prompt positions as columns and layers as rows. Clicking a cell p
 top token and exposes full-vocabulary rank trajectories across positions and depth. This
 preserves the paper's inspectable visual grammar instead of replacing it with a merely
 decorative chart.
+
+## Iteration 1 verification
+
+A clean Google Colab CLI 0.6.0 run completed on a Tesla T4 on 2026-08-23:
+
+- all five prompt families completed;
+- the requested and resolved Qwen model revisions both equaled
+  `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`;
+- the published lens loaded from immutable revision
+  `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a`;
+- the maximum final-readout parity error was `0.03125`;
+- the saved output notebook contained zero error cells; and
+- both the JSON report and 1,823,422-byte interactive HTML artifact were generated.
+
+The HTML title and expected interactive markup were validated statically. The local
+browser sandbox blocked both localhost and `file://` rendering, so manual interaction
+with the rendered grid remains an explicit follow-up rather than a claimed pass. Generated
+artifacts and the executed output notebook remain gitignored; this repository records the
+verification summary, not a committed result archive.
 
 ## Why this is a justified Qwen test
 

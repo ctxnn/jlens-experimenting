@@ -1,7 +1,7 @@
 # Understanding the Official J-Lens × Qwen Experiment
 
 > **Document version:** 1.0
-> **Experiment version:** 0.3.2
+> **Experiment version:** 0.3.3
 > **Scope:** applying and validating Anthropic's published Jacobian lens; no lens fitting
 > or from-scratch Jacobian implementation is performed in this repository.
 
@@ -124,8 +124,11 @@ a slow or misleading partial run.
 ### Cell group 2 — matched model and lens
 
 The notebook loads Qwen in bfloat16 on CUDA and loads its tokenizer with the same immutable
-Hugging Face revision. It asserts the resolved model configuration commit equals
-`MODEL_REVISION`, prints that value, and later records it in the JSON report. It then wraps the Hugging
+Hugging Face revision. It asks `hf_hub_download` for `config.json` at that revision, extracts
+the resolved commit from the returned immutable `snapshots/<sha>/...` cache path, and asserts
+that it equals `MODEL_REVISION`. This avoids Transformers' private `_commit_hash` field, which
+is `None` for this model/runtime combination even when loading by an exact SHA. The resolved
+value is printed and recorded separately in the JSON report. The notebook then wraps the Hugging
 Face model using `jlens.from_hf`, then downloads the published lens using
 `JacobianLens.from_pretrained` at the immutable `LENS_REVISION` commit. `LENS_SOURCE_REF`
 retains the human-readable `qwen-n1000` branch name only as report provenance; it is not
@@ -205,6 +208,7 @@ Conceptual schema:
 {
   "model": "Qwen/Qwen3.5-4B",
   "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "resolved_model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
   "lens_revision": "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a",
   "lens_source_ref": "qwen-n1000",
   "readout_position": -1,
@@ -266,7 +270,38 @@ inspect its distribution rather than treating a single threshold as universally 
 9. Download both files in `artifacts/` before the Colab runtime is deleted.
 10. Record GPU type, package versions, and unexpected warnings with the artifacts.
 
-## 9. Reading results responsibly
+## 9. Iteration 1 live verification
+
+The first end-to-end validation run used Google Colab CLI 0.6.0 and a clean Tesla T4
+kernel on 2026-08-23. L4 allocation was unavailable for the authenticated account, so
+the documented T4 fallback was used. The run established:
+
+| Check | Observed result |
+|---|---|
+| Notebook error outputs | `0` |
+| Prompt families completed | `5 / 5` |
+| Requested model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
+| Resolved model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
+| Lens revision | `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a` |
+| Maximum final-readout parity error | `0.03125` |
+| JSON report | generated |
+| Interactive HTML | generated, 1,823,422 bytes |
+
+The qualitative readouts were coherent in several late-layer examples: the multihop
+prompt ranked `Euro` first at layer 30, the typo prompt ranked `Paris` first at layer 30,
+and the ASCII-face prompt ranked `nose` first at layers 24 and 30. These examples are
+descriptive smoke-test evidence only; they are not an accuracy benchmark or causal claim.
+
+The HTML title and expected rank/interaction markup passed static inspection. A real local
+browser render could not be completed because the browser sandbox rejected both the
+temporary localhost server and direct `file://` navigation. Interactive visual QA therefore
+remains open and is not represented as passed.
+
+The generated JSON, HTML, and executed notebook remain gitignored. Consequently, this
+iteration verifies the executable path and records a source-controlled summary, but it does
+not yet satisfy the roadmap's stronger requirement to archive numerical and visual results.
+
+## 10. Reading results responsibly
 
 A useful result is a repeatable difference between J-Lens and the matched logit-lens
 control whose token ranks align with a defensible semantic hypothesis. It is stronger if
@@ -281,7 +316,7 @@ Do not infer:
 - that parity validates prompt position (the original `-2` bug demonstrates otherwise);
 - that these five prompts estimate population-level performance.
 
-## 10. Failure modes and troubleshooting
+## 11. Failure modes and troubleshooting
 
 | Symptom | Likely cause | Action |
 |---|---|---|
@@ -294,7 +329,7 @@ Do not infer:
 | Blank visualization | iframe/browser restriction or interrupted build | save/open the HTML artifact and rerun the visualization cell. |
 | Results seem to echo prompt ending | wrong position or copying | confirm `READOUT_POSITION=-1` and inspect input-token ranks. |
 
-## 11. Repository map
+## 12. Repository map
 
 ```text
 .
@@ -308,7 +343,7 @@ Do not infer:
 └── .gitignore                        excludes generated artifacts/caches
 ```
 
-## 12. Next steps after official-library validation
+## 13. Next steps after official-library validation
 
 ```mermaid
 flowchart LR
