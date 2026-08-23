@@ -12,6 +12,27 @@ its experiment contract:
 The repository is currently pre-1.0 because the official GPU experiment has not yet been
 archived with committed numerical results.
 
+## [0.3.2] — 2026-08-23
+
+### Fixed
+
+- Replaced mutable lens revision `qwen-n1000` with immutable repository commit
+  `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a` for `JacobianLens.from_pretrained`.
+- Retained `qwen-n1000` separately as `LENS_SOURCE_REF` for human-readable provenance.
+- Recorded both `lens_revision` (immutable SHA) and `lens_source_ref` (descriptive ref) in
+  `artifacts/qwen_validation.json`.
+- Printed the immutable lens revision during notebook setup.
+- Added structural regression coverage that rejects using the mutable ref as
+  `LENS_REVISION`.
+
+### Why this fix matters
+
+A Hugging Face branch can move to different lens weights without changing its name. If
+`qwen-n1000` moved, the old report would still claim the same revision and model parity
+would remain blind to the changed Jacobian. Downloading by full repository commit makes
+the lens artifact snapshot reproducible while preserving the descriptive branch name as
+non-authoritative metadata.
+
 ## [0.3.1] — 2026-08-23
 
 ### Fixed

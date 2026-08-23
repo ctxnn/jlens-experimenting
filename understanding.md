@@ -1,7 +1,7 @@
 # Understanding the Official J-Lens × Qwen Experiment
 
 > **Document version:** 1.0
-> **Experiment version:** 0.3.1
+> **Experiment version:** 0.3.2
 > **Scope:** applying and validating Anthropic's published Jacobian lens; no lens fitting
 > or from-scratch Jacobian implementation is performed in this repository.
 
@@ -30,7 +30,8 @@ claim that five hand-written prompts measure general performance.
 | Model | `Qwen/Qwen3.5-4B` | Architecture named by the published lens fit metadata. |
 | Model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` | Immutable model and tokenizer snapshot; prevents default-branch drift. |
 | Lens repository | `neuronpedia/jacobian-lens` | Public host used by the official walkthrough. |
-| Lens revision | `qwen-n1000` | Selects the published 1,000-prompt artifact set. |
+| Lens source ref | `qwen-n1000` | Human-readable provenance; never used as the download revision. |
+| Lens revision | `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a` | Immutable lens repository snapshot containing the published artifact. |
 | Lens file | `qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt` | Matched width, depth, weights, and layer indexing. |
 | Runtime dtype | `torch.bfloat16` for the model | Practical GPU inference dtype; lens readouts are promoted to float for comparisons. |
 | Readout position | `-1` | Final supplied token; its causal logits predict the first unseen token. |
@@ -126,8 +127,10 @@ The notebook loads Qwen in bfloat16 on CUDA and loads its tokenizer with the sam
 Hugging Face revision. It asserts the resolved model configuration commit equals
 `MODEL_REVISION`, prints that value, and later records it in the JSON report. It then wraps the Hugging
 Face model using `jlens.from_hf`, then downloads the published lens using
-`JacobianLens.from_pretrained`. The wrapper locates the transformer blocks, final norm,
-and LM head needed for official activation capture and readout.
+`JacobianLens.from_pretrained` at the immutable `LENS_REVISION` commit. `LENS_SOURCE_REF`
+retains the human-readable `qwen-n1000` branch name only as report provenance; it is not
+passed to the downloader. The wrapper locates the transformer blocks, final norm, and LM
+head needed for official activation capture and readout.
 
 ### Cell group 3 — prompt-family evaluation
 
@@ -202,7 +205,8 @@ Conceptual schema:
 {
   "model": "Qwen/Qwen3.5-4B",
   "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
-  "lens_revision": "qwen-n1000",
+  "lens_revision": "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a",
+  "lens_source_ref": "qwen-n1000",
   "readout_position": -1,
   "readout_semantics": "logits after the final supplied token predict the first unseen token",
   "prompts": {
@@ -234,7 +238,7 @@ experiment output, so `artifacts/` is gitignored rather than committed.
 
 | Gate | Mechanism | Proves | Does not prove |
 |---|---|---|---|
-| Dependency | immutable Git commit | known library source | artifact correctness |
+| Dependency | immutable code and lens-repository commits | known library and artifact snapshots | semantic correctness of the artifact |
 | Pairing | fixed model/lens identifiers and immutable model/tokenizer SHA | reproducible intended pairing without default-branch drift | cryptographic proof of the fitter's model SHA |
 | CUDA | runtime assertion | suitable execution device exists | enough VRAM |
 | Position | shared `READOUT_POSITION=-1` plus tests | next unseen token is targeted | correct prompt design |
@@ -253,7 +257,7 @@ inspect its distribution rather than treating a single threshold as universally 
 1. Open `notebooks/qwen_official_jlens.ipynb` in Google Colab.
 2. Select an L4 or A100 GPU runtime.
 3. Run cells from top to bottom without skipping installation or assertions.
-4. Confirm the printed GPU, full model revision SHA, model wrapper, and lens metadata are expected.
+4. Confirm the printed GPU, full model and lens revision SHAs, model wrapper, and lens metadata are expected.
 5. For every prompt, confirm the printed readout token is labeled as predicting the next
    unseen token.
 6. Confirm no parity assertion fails.

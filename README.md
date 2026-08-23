@@ -18,9 +18,11 @@ handoff.
 The notebook pins the reference library to commit
 `581d398613e5602a5af361e1c34d3a92ea82ba8e` and pins both model and tokenizer files to
 Qwen revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`. It loads the published
-1,000-prompt lens for `Qwen/Qwen3.5-4B` from `neuronpedia/jacobian-lens` and performs
-inference only. The immutable model revision prevents a future default-branch update from
-silently invalidating the model–lens pairing.
+1,000-prompt lens for `Qwen/Qwen3.5-4B` from `neuronpedia/jacobian-lens` at immutable
+repository commit `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a` and performs inference only. The
+human-readable `qwen-n1000` ref is retained only as provenance metadata, never as the
+download revision. Immutable model and lens revisions prevent either mutable ref from
+silently invalidating the pairing.
 
 ## Outputs
 
@@ -41,6 +43,8 @@ decorative chart.
 - **Published-artifact gate:** exact official code revision and n=1,000 Qwen lens.
 - **Immutable-model gate:** the model and tokenizer use the same full Hugging Face commit
   SHA, that resolved model SHA is asserted at runtime, and it is recorded in the report.
+- **Immutable-lens gate:** lens weights are downloaded by the lens repository's full commit
+  SHA; the mutable `qwen-n1000` name is recorded separately only for human provenance.
 - **Next-token-position gate:** causal logits at position `p` predict token `p + 1`. All
   completion readouts use position `-1`, the final supplied prompt token, so they predict
   the first unseen token. Position `-2` would merely reconstruct the known final prompt
