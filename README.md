@@ -21,8 +21,8 @@ The notebook pins the reference library to commit
 - Anthropic's interactive position × layer slice using the official `compute_slice` and
   `build_page` functions.
 - A shareable `artifacts/qwen_ascii_face_slice.html` visualization.
-- An `artifacts/qwen_validation.json` report containing final-output parity errors and
-  J-Lens/logit-lens top-10 overlap.
+- An `artifacts/qwen_validation.json` report containing the readout position and its
+  next-token semantics, final-output parity errors, and J-Lens/logit-lens top-10 overlap.
 
 The slice uses prompt positions as columns and layers as rows. Clicking a cell pins its
 top token and exposes full-vocabulary rank trajectories across positions and depth. This
@@ -32,8 +32,13 @@ decorative chart.
 ## Why this is a justified Qwen test
 
 - **Published-artifact gate:** exact official code revision and n=1,000 Qwen lens.
-- **Parity gate:** the official API's final output must agree with a direct Qwen forward
-  pass at the same token position.
+- **Next-token-position gate:** causal logits at position `p` predict token `p + 1`. All
+  completion readouts use position `-1`, the final supplied prompt token, so they predict
+  the first unseen token. Position `-2` would merely reconstruct the known final prompt
+  token and is explicitly rejected by the structural tests.
+- **Parity gate:** the official API's output at `-1` must agree with a direct Qwen forward
+  pass at `-1`. This verifies the adapter/readout path but is not, by itself, evidence that
+  the evaluation position is meaningful.
 - **Control gate:** `use_jacobian=False` gives the logit-lens baseline using the same
   model, tokenizer, activations, layers, and positions.
 - **Prompt-family gate:** multihop, multilingual, typo, ordering, and ASCII-face prompts
@@ -54,3 +59,16 @@ python -m json.tool notebooks/qwen_official_jlens.ipynb >/dev/null
 ```
 
 Numerical model execution and rendering happen in the GPU notebook.
+
+## Reading the results correctly
+
+For token IDs `[t0, t1, ..., tn]`, a causal language model's logit vector at index `i`
+predicts `t(i+1)`. There is no supplied target after `tn`; therefore logits at index `-1`
+represent the distribution for the first new completion token. The notebook prints the
+last supplied token beside “predicts next unseen token” to make this convention visible
+in every prompt result.
+
+The parity assertion answers only “does the official adapter reproduce the model's
+readout at the selected residual?” The separate position contract answers “did we select
+the residual that predicts an unseen continuation?” Both checks are necessary: parity can
+still pass when every path consistently uses the wrong position.
