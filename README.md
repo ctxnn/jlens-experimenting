@@ -4,6 +4,10 @@ This repository deliberately starts by validating Anthropic's official
 [`jlens`](https://github.com/anthropics/jacobian-lens) library rather than
 reimplementing the algorithm from scratch.
 
+For the complete conceptual model, code walkthrough, diagrams, artifact schema, and
+interpretation guide, read [`understanding.md`](understanding.md). Version history and
+scientific fixes are recorded in [`changes_log.md`](changes_log.md).
+
 ## Run in Google Colab
 
 Open [`notebooks/qwen_official_jlens.ipynb`](notebooks/qwen_official_jlens.ipynb), select

@@ -47,5 +47,35 @@ class NotebookContractTest(unittest.TestCase):
             self.assertIn(expected, self.source)
 
 
+class DocumentationContractTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.understanding = Path("understanding.md").read_text()
+        cls.change_log = Path("changes_log.md").read_text()
+        cls.readme = Path("README.md").read_text()
+
+    def test_readme_links_long_form_documentation(self):
+        self.assertIn("[`understanding.md`](understanding.md)", self.readme)
+        self.assertIn("[`changes_log.md`](changes_log.md)", self.readme)
+
+    def test_understanding_documents_experiment_contract(self):
+        required = (
+            "Experiment version:** 0.3.0",
+            "READOUT_POSITION = -1",
+            "```mermaid",
+            "Generated artifacts and schema",
+            "Validation gates and what each proves",
+            "Failure modes and troubleshooting",
+        )
+        for fragment in required:
+            self.assertIn(fragment, self.understanding)
+
+    def test_change_log_records_versions_and_position_fix(self):
+        for version in ("[0.3.0]", "[0.2.0]", "[0.1.0]"):
+            self.assertIn(version, self.change_log)
+        self.assertIn("teacher-forced reconstruction", self.change_log)
+        self.assertIn("positions=[-2]", self.change_log)
+
+
 if __name__ == "__main__":
     unittest.main()
