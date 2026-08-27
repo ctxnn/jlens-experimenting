@@ -9,8 +9,50 @@ its experiment contract:
   documentation.
 - **PATCH:** correction that preserves the intended experiment design.
 
-The repository is currently pre-1.0 because it contains one qualitative validation run,
-not a broader benchmark or independent lens fit.
+The repository is currently pre-1.0 because its expanded prompt suite remains a designed
+descriptive readout study, not a causal intervention benchmark or independent lens fit.
+
+## [0.5.0] — 2026-08-27
+
+### Added
+
+- Added `experiments/qwen_relay_suite.py`, a pinned 63-prompt GPU evaluation with 51
+  hidden-description cases, 12 explicit-entity baselines, four domains, matched decoys,
+  greedy continuations, and per-layer J-Lens/logit-lens ranks.
+- Added the focused exact-prompt `qwen_spider_trace.py` experiment, numerical trace, and
+  official interactive slice as a reproducible drill-down beside the broader suite.
+- Added the complete `artifacts/qwen_relay_suite.json` evidence archive and deterministic
+  compact `artifacts/qwen_relay_suite_summary.json` projection.
+- Added `visualizations/qwen-concept-relay.html`, a self-contained real-data reader with
+  selectable 31-layer traces, J-Lens/logit-lens switching, correctness/tokenization
+  states, and an all-prompt relay map. Its source template and deterministic builder are
+  included for reproducibility.
+- Added regression coverage for immutable revisions, complete prompt retention, raw-to-
+  compact reconciliation, observed aggregate counts, and scientific caveats.
+
+### Observed
+
+- Completed all `63 / 63` prompts on a Tesla T4 using the pinned Qwen and lens revisions.
+- Observed `50 / 63` correct greedy continuations, `46 / 63` fully single-token measurable
+  rows, `48 / 63` target-specific peaks, and `7 / 63` strict relay-pattern cases.
+- Recorded maximum adapter/direct-model parity error `0.0625`.
+- Retained incorrect answers and 17 token-split rows instead of filtering the visual to
+  favorable examples.
+
+### Verified
+
+- Reconciled aggregate counts independently against raw result rows; all prompt IDs were
+  unique and every prompt contained 31 layer records.
+- Rendered and visually inspected the standalone HTML at desktop and mobile widths.
+- Exercised prompt selection, J-Lens/logit-lens switching, strict-relay filtering, and
+  token-split filtering at 1440 px and 390 px with no browser console errors or body
+  overflow. The relay and token-split filters returned 7 and 17 rows respectively.
+
+### Interpretation boundary
+
+The strict relay rule is descriptive: correct generation, target rank at most 100, and
+target peak before the expected answer first enters the top 10. It is not a causal
+spider-to-ant intervention or a literal transcript of model thought.
 
 ## [0.4.0] — 2026-08-24
 

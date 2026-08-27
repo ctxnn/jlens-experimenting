@@ -94,7 +94,7 @@ class DocumentationContractTest(unittest.TestCase):
 
     def test_understanding_documents_experiment_contract(self):
         required = (
-            "Experiment version:** 0.3.3",
+            "Experiment version:** 0.5.0",
             "Lens revision | `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a`",
             "Model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`",
             "READOUT_POSITION = -1",
@@ -111,7 +111,7 @@ class DocumentationContractTest(unittest.TestCase):
             self.assertIn(fragment, self.understanding)
 
     def test_change_log_records_versions_and_position_fix(self):
-        for version in ("[0.4.0]", "[0.3.3]", "[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
+        for version in ("[0.5.0]", "[0.4.0]", "[0.3.3]", "[0.3.2]", "[0.3.1]", "[0.3.0]", "[0.2.0]", "[0.1.0]"):
             self.assertIn(version, self.change_log)
         self.assertIn("teacher-forced reconstruction", self.change_log)
         self.assertIn("positions=[-2]", self.change_log)
@@ -126,6 +126,93 @@ class DocumentationContractTest(unittest.TestCase):
         self.assertIn("not confidence or accuracy", self.atlas)
         self.assertIn("READOUT_POSITION = -1", self.atlas)
         self.assertIn("not proof that the concept caused the answer", self.atlas)
+
+
+class RelaySuiteContractTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.experiment = Path("experiments/qwen_relay_suite.py").read_text()
+        cls.data = json.loads(Path("artifacts/qwen_relay_suite.json").read_text())
+        cls.summary = json.loads(
+            Path("artifacts/qwen_relay_suite_summary.json").read_text()
+        )
+        cls.visualization = Path(
+            "visualizations/qwen-concept-relay.html"
+        ).read_text()
+        cls.readme = Path("README.md").read_text()
+        cls.understanding = Path("understanding.md").read_text()
+        cls.change_log = Path("changes_log.md").read_text()
+
+    def test_suite_is_pinned_and_explicitly_non_causal(self):
+        self.assertIn('MODEL_NAME = "Qwen/Qwen3.5-4B"', self.experiment)
+        self.assertIn(
+            'MODEL_REVISION = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"',
+            self.experiment,
+        )
+        self.assertIn(
+            'LENS_REVISION = "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a"',
+            self.experiment,
+        )
+        self.assertEqual(self.data["scope"], "readout-only; no causal interventions")
+
+    def test_suite_retains_the_complete_prompt_population(self):
+        results = self.data["results"]
+        ids = [row["id"] for row in results]
+        self.assertEqual(len(results), 63)
+        self.assertEqual(len(set(ids)), 63)
+        self.assertEqual(
+            {condition: sum(row["condition"] == condition for row in results)
+             for condition in ("hidden", "explicit")},
+            {"hidden": 51, "explicit": 12},
+        )
+        self.assertTrue(all(len(row["layers"]) == 31 for row in results))
+        self.assertLessEqual(
+            max(row["model_parity_max_abs_error"] for row in results), 0.125
+        )
+
+    def test_observed_aggregate_is_reconciled(self):
+        aggregate = self.data["aggregate"]
+        self.assertEqual(
+            {key: aggregate[key] for key in ("total", "correct", "measurable", "relay", "target_specific")},
+            {"total": 63, "correct": 50, "measurable": 46, "relay": 7, "target_specific": 48},
+        )
+        self.assertEqual(sum(row["summary"]["relay"] for row in self.data["results"]), 7)
+        self.assertEqual(sum(row["correct"] for row in self.data["results"]), 50)
+        self.assertEqual(sum(row["measurable"] for row in self.data["results"]), 46)
+
+    def test_compact_summary_matches_raw_results(self):
+        self.assertEqual(self.summary["aggregate"], self.data["aggregate"])
+        self.assertEqual(
+            [row["id"] for row in self.summary["results"]],
+            [row["id"] for row in self.data["results"]],
+        )
+        self.assertTrue(all(len(row["layers"]) == 31 for row in self.summary["results"]))
+
+    def test_visualization_exposes_failures_and_interpretation_boundary(self):
+        required = (
+            "Concept relay across 63 prompts",
+            "All prompts, no cherry-pick",
+            "incorrect",
+            "token-split",
+            "logit lens",
+            "not a causal intervention",
+            "not a literal transcript",
+            "animal-spider-web-catcher",
+            "capital-france",
+        )
+        for fragment in required:
+            self.assertIn(fragment, self.visualization)
+        self.assertNotIn("__QWEN_RELAY_DATA__", self.visualization)
+
+    def test_release_documentation_records_observed_suite(self):
+        self.assertIn(
+            "visualizations/qwen-concept-relay.html", self.readme
+        )
+        self.assertIn("50 / 63", self.readme)
+        self.assertIn("Experiment version:** 0.5.0", self.understanding)
+        self.assertIn("## 10. Multi-prompt relay verification", self.understanding)
+        self.assertIn("## [0.5.0]", self.change_log)
+        self.assertIn("17 token-split rows", self.change_log)
 
 
 if __name__ == "__main__":

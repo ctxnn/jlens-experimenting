@@ -43,6 +43,20 @@ A passing run prints `0`. Release the runtime when validation is complete:
 colab stop -s jlens-qwen
 ```
 
+Run the 63-prompt concept-relay suite in a separate clean T4 session:
+
+```bash
+colab new -s jlens-relay-suite --gpu T4
+colab exec -s jlens-relay-suite -f experiments/qwen_relay_suite.py --timeout 1800
+colab download -s jlens-relay-suite \
+  /content/artifacts/qwen_relay_suite.json artifacts/qwen_relay_suite.json
+colab stop -s jlens-relay-suite
+python3 experiments/build_relay_visualization.py
+```
+
+The builder produces a compact reviewed dataset and a self-contained HTML visualization.
+It does not rerun the model or alter the measured ranks.
+
 The notebook pins the reference library to commit
 `581d398613e5602a5af361e1c34d3a92ea82ba8e` and pins both model and tokenizer files to
 Qwen revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`. It loads the published
@@ -63,6 +77,14 @@ silently invalidating the pairing.
 - A purpose-built [`visualizations/jlens-concept-atlas.html`](visualizations/jlens-concept-atlas.html)
   with three linked explanations: the Jacobian transport, semantic emergence through
   depth, and the causal readout horizon.
+- A real-data [`visualizations/qwen-concept-relay.html`](visualizations/qwen-concept-relay.html)
+  spanning 63 prompts, with per-layer target/answer/decoy traces, J-Lens and logit-lens
+  controls, correctness states, token-split rows, and an all-prompt relay map.
+- The complete `artifacts/qwen_relay_suite.json` archive and compact
+  `artifacts/qwen_relay_suite_summary.json` used by the standalone visualization.
+- A focused `artifacts/qwen_spider_trace.json` plus official
+  `artifacts/qwen_spider_slice.html` drill-down for the exact paper prompt; both are
+  explicitly readout-only and are superseded by the 63-prompt suite for general claims.
 
 The slice uses prompt positions as columns and layers as rows. Clicking a cell pins its
 top token and exposes full-vocabulary rank trajectories across positions and depth. This
@@ -96,6 +118,24 @@ horizon makes the `-1` versus `-2` indexing distinction visible. Control charact
 normalized only for display, and the atlas labels overlap as set agreement rather than
 confidence or accuracy.
 
+## Multi-prompt relay verification
+
+A pinned Tesla T4 run on 2026-08-27 evaluated 63 completion prompts: 51 hidden-description
+cases and 12 explicit-entity baselines across animals, geometry, chemistry, and geography.
+No prompt was removed from the archived dataset or visualization.
+
+- `50 / 63` greedy continuations began with the expected answer;
+- `46 / 63` cases had single-token surfaces for target, decoy, and expected answer;
+- the target outranked its matched decoy at the target peak in `48 / 63` cases;
+- `7 / 63` met the strict relay definition; and
+- the maximum adapter/direct-model parity error was `0.0625`.
+
+Strict relay means: the generation is correct, the target reaches rank `≤ 100`, and its
+best layer occurs before the expected answer first enters the top 10. This is a declared
+descriptive threshold, not a causal test. Incorrect outputs and concepts split across
+multiple tokenizer tokens remain visible so the result cannot be read as a cherry-picked
+success gallery.
+
 ## Why this is a justified Qwen test
 
 - **Published-artifact gate:** exact official code revision and n=1,000 Qwen lens.
@@ -113,7 +153,7 @@ confidence or accuracy.
 - **Control gate:** `use_jacobian=False` gives the logit-lens baseline using the same
   model, tokenizer, activations, layers, and positions.
 - **Prompt-family gate:** multihop, multilingual, typo, ordering, and ASCII-face prompts
-  avoid relying on one cherry-picked example.
+  plus the separate 63-prompt relay suite avoid relying on one cherry-picked example.
 - **Rank gate:** top-k overlap and full-vocabulary ranks supplement decoded top-1 text.
 - **Interpretation gate:** readable tokens are descriptive evidence, not proof of causal
   mediation.
