@@ -79,11 +79,32 @@ class DocumentationContractTest(unittest.TestCase):
         cls.understanding = Path("understanding.md").read_text()
         cls.change_log = Path("changes_log.md").read_text()
         cls.readme = Path("README.md").read_text()
+        cls.experiment = Path("experiment.md").read_text()
         cls.atlas = Path("visualizations/jlens-concept-atlas.html").read_text()
 
     def test_readme_links_long_form_documentation(self):
         self.assertIn("[`understanding.md`](understanding.md)", self.readme)
         self.assertIn("[`changes_log.md`](changes_log.md)", self.readme)
+        self.assertIn("[`experiment.md`](experiment.md)", self.readme)
+
+    def test_experiment_report_records_reproducible_progress(self):
+        required = (
+            "Experiment version:** 0.5.0",
+            "What was built, in order",
+            "MODEL_REVISION",
+            "READOUT_POSITION = -1",
+            "Prompt-suite design",
+            "Strict relay",
+            "50 / 63",
+            "7 / 63",
+            "Step 17 — Validate the archive and interface",
+            "qwen-concept-relay.template.html",
+            "source template with a data placeholder",
+            "Not yet established",
+            "no causal interventions",
+        )
+        for fragment in required:
+            self.assertIn(fragment, self.experiment)
 
     def test_readme_documents_colab_cli_and_error_audit(self):
         self.assertIn("colab exec -s jlens-qwen", self.readme)
