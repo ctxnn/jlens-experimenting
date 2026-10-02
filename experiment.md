@@ -2,7 +2,7 @@
 
 > **Experiment version:** 0.5.0<br>
 > **Results snapshot:** 27 August 2026<br>
-> **Documentation updated:** 10 September 2026<br>
+> **Documentation updated:** 2 October 2026<br>
 > **Status:** the official-library validation, focused spider trace, 63-prompt
 > descriptive study, and real-data visualization are complete. Causal interventions
 > and independent lens fitting have not been performed.
@@ -23,27 +23,32 @@ Decoy:    ant
 The experiment does not ask Qwen to print the target concept. It greedily completes the
 prompt, then uses Anthropic's published Jacobian Lens (J-Lens) to score `spider`, `8`, and
 `ant` at every one of the 31 supported source layers immediately before the first generated
-content token. A matched logit-lens readout is computed from the same prompt, position,
-layers, model, tokenizer, final norm, and vocabulary head.
+qualifying token (which can be an option label or placeholder). A matched logit-lens
+readout is computed from the same prompt, position, layers, model, tokenizer, final norm,
+and vocabulary head.
 
 The complete run contains 63 prompts rather than one demonstration: 51 hide the target
 behind a description and 12 name it explicitly as calibration baselines. All prompts,
-incorrect continuations, and tokenizer failures remain in the saved data.
+prefix mismatches, and single-token coverage gaps remain in the saved data.
 
 The measured result is deliberately narrow:
 
 - Qwen began `50 / 63` continuations with an expected answer.
 - `46 / 63` rows were fully measurable with single-token surfaces for target, answer,
   and decoy.
-- The target outranked its matched decoy at its best J-Lens layer in `48 / 63` rows.
-- `7 / 63` rows satisfied the declared strict relay rule.
+- The target outranked its matched decoy at its best J-Lens layer in 48 of 50 evaluable
+  rows; 13 were unavailable (`48 / 63` of the full suite).
+- `7 / 63` rows satisfied the declared strict relay rule under J-Lens; the matched
+  logit-lens control satisfied the same rule in `12 / 63` rows.
 - The maximum difference between the adapter's final readout and a direct Qwen forward
   pass was `0.0625`, within the configured numerical tolerance.
 
 This supports the descriptive claim that **Qwen sometimes shows a readable target-to-answer
 ordering under this lens and metric**. It does not show that the decoded word is the model's
 literal thought, that the target representation caused the answer, or that this pattern
-generalizes to arbitrary prompts.
+generalizes to arbitrary prompts. The spider ordering also appears under logit lens;
+these measurements do not establish that J-Lens uniquely reveals it or outperforms the
+control.
 
 ## 1. What was built, in order
 
@@ -80,11 +85,15 @@ The implementation is split accordingly:
 | [`experiments/build_relay_visualization.py`](experiments/build_relay_visualization.py) | Deterministic raw-to-compact transformation and HTML build. |
 | [`tests/test_notebook.py`](tests/test_notebook.py) | Structural and evidence-contract regression tests. |
 
-## 2. Frozen model, lens, and runtime contract
+## 2. Pinned artifacts and observed runtime
 
 The model and lens are treated as a matched experimental instrument. Mutable default
 branches are not sufficient because a model update or a changed lens file could silently
 change the result while preserving the same human-readable name.
+
+The reference source, model, tokenizer, and lens are pinned. Runtime package versions
+below are observed values, not an environment lock; transitive dependencies can change
+on a fresh installation.
 
 | Component | Exact value used |
 |---|---|
@@ -101,7 +110,7 @@ change the result while preserving the same human-readable name.
 | Observed Transformers version | `5.15.0` |
 | Generated tokens per prompt | at most `24`, greedy decoding, no sampling |
 | Readout position | `-1`, after the final supplied prefix token |
-| Source layers | all `31` layers exposed by the published lens |
+| Source layers | `31` fitted source layers, indices `0–30`; ordinary final-model output at index `31` is separate |
 
 The script also downloads `config.json` with `hf_hub_download` at the requested model SHA,
 extracts the resolved SHA from the local `snapshots/<sha>/...` path, and asserts equality.
@@ -161,10 +170,13 @@ wrong experimental question. The experiment consequently centralizes
 regression tests that reject literal `-2` readouts.
 
 For the multi-prompt run, Qwen first generates an unedited continuation. The code finds the
-first generated token containing a Unicode word or digit and constructs a readout prefix
-that ends immediately before it. This preserves any leading whitespace token but excludes
-the first semantic answer token. Position `-1` therefore predicts the first generated
-content token rather than reading a state after the answer has already been supplied.
+first generated token containing a Unicode word character or digit (`[\w\d]`) and
+constructs a readout prefix that ends immediately before it. Word characters include
+underscores. Any preceding generated tokens are retained, not just whitespace.
+Position `-1` predicts that qualifying token; it is not guaranteed to be an answer token.
+In five option-list continuations the token begins the `A` label; for `explicit-octopus`
+it begins an underscore placeholder. The saved prefix is exposed in the viewer so these
+cases can be inspected without silently changing the alignment protocol.
 
 ## 5. Prompt-suite design
 
@@ -197,7 +209,10 @@ Every case is declared in code with a stable ID and the same schema:
 The explicit cases name the target directly—for example, “The number of legs on a spider
 is”—and act as calibration baselines. They are not a separate control model, and the suite
 was not sampled from a natural prompt population. The results therefore describe these
-63 designed cases rather than an unbiased estimate of Qwen behavior.
+63 designed cases rather than an unbiased estimate of Qwen behavior. Some nominally hidden
+descriptions contain strong lexical or numeric clues (for example, “eight triangles”);
+the condition label is not a guarantee of a purely implicit reasoning problem. The suite
+was not publicly preregistered and has no independent held-out set.
 
 ## 6. Metric definitions
 
@@ -211,7 +226,9 @@ the complete surface to exactly one token. Duplicate token IDs are removed.
 
 A row is **fully measurable** only if target, answer, and decoy each have at least one
 single-token variant. This is a measurement restriction, not a judgment that a multi-token
-concept is absent. Seventeen rows fail this gate and remain visible as `token-split`.
+concept is absent. Seventeen rows fail this gate and remain visible as not fully measurable.
+Available target, answer, or decoy ranks remain usable. Target coverage is `51 / 63`,
+answer coverage `59 / 63`, and decoy coverage `57 / 63`; missing components can overlap.
 
 ### 6.2 Vocabulary rank
 
@@ -225,12 +242,14 @@ Rank `1` is best. Tied scores receive the same competition rank because only str
 greater scores are counted. When a concept has several valid surface tokens, the experiment
 uses the variant with the lowest rank; log probability breaks a rank tie.
 
-### 6.3 Correct continuation
+### 6.3 Expected-answer prefix match (archived `correct` flag)
 
 Generation is deterministic: `do_sample=False` and at most 24 new tokens. A result is
 **correct** when the normalized continuation begins with one of the expected aliases at a
-word boundary. Explanations later in the continuation do not rescue an incorrect first
-answer.
+word boundary. Later answers do not rescue a failed prefix match. This is not a factual
+assessment of the complete continuation: a wrong answer, option list, placeholder, or
+non-answer preamble can all fail. The historical field name `correct` and flags are
+preserved; reader-facing labels explain the narrower measurement.
 
 ### 6.4 Target peak
 
@@ -248,7 +267,9 @@ it does not mean the model has irreversibly or causally committed.
 
 A row is **target-specific** when the target's best rank is better than the matched decoy's
 rank at the target-peak layer. This asks whether the peak discriminates the intended entity
-from one related alternative.
+from one related alternative. This requires target and decoy coverage, not answer coverage:
+it is evaluable in 50 rows, passes in 48, fails in 2, and is unavailable in 13. This is why
+48 target-specific rows can exceed the 46 fully measurable rows.
 
 ### 6.7 Strict relay
 
@@ -308,17 +329,18 @@ For each prompt, the script resolves single-token variants for target, decoy, an
 expected-answer alias. The resolved surfaces and token IDs are stored in the raw row so
 rank calculations can be audited later.
 
-### Step 6 — Generate Qwen's answer without editing it
+### Step 6 — Generate Qwen's continuation without editing it
 
 The prompt is tokenized and Qwen generates greedily for at most 24 tokens. The raw
-continuation is preserved, including wrong answers and later explanatory text.
+continuation is preserved, including wrong answers and later explanatory text. These are
+raw completion prompts, not chat-template-formatted instruction conversations.
 
 ### Step 7 — Align the readout before the first content token
 
-The first generated token containing a word character or digit is identified. The
-readout prefix includes the original prompt and any generated leading whitespace, but not
-that first content token. This makes the measured residual the one used to predict the
-answer token shown to the reader.
+The first generated token containing a word character (including underscore) or digit is
+identified. The readout prefix includes the original prompt and every generated token
+before it, but not that token. The measured residual predicts that qualifying token,
+which is sometimes an option label or placeholder rather than the answer.
 
 ### Step 8 — Compute J-Lens logits at all 31 layers
 
@@ -384,6 +406,7 @@ readout semantics, thresholds, aggregate counts, and every raw prompt row to
 [`experiments/build_relay_visualization.py`](experiments/build_relay_visualization.py)
 reads the raw archive and creates a compact record containing all prompt IDs and all 31
 layer ranks while omitting repeated per-surface detail that the browser does not use. It
+also retains alignment metadata and derives logit-lens summaries using the same thresholds. It
 writes [`artifacts/qwen_relay_suite_summary.json`](artifacts/qwen_relay_suite_summary.json).
 
 ### Step 16 — Produce the self-contained visualization
@@ -392,7 +415,9 @@ The builder serializes the compact data and replaces the single
 `__QWEN_RELAY_DATA__` marker in
 [`visualizations/qwen-concept-relay.template.html`](visualizations/qwen-concept-relay.template.html).
 The result is [`visualizations/qwen-concept-relay.html`](visualizations/qwen-concept-relay.html),
-which contains the real measurements and requires no server.
+which contains the real measurements and requires no server. The same builder refreshes
+the atlas's complete raw token lists from `qwen_validation.json`, using the notebook's
+literal prompt declarations. Token normalization happens only when displaying them.
 
 **Important:** the `.template.html` file is intentionally blank because its data marker has
 not been replaced. It is build source, not the viewer. Open `qwen-concept-relay.html` to
@@ -442,12 +467,12 @@ the latest archive.
 
 ## 9. What each output contains
 
-| Artifact | Size in the archived run | Meaning |
+| Artifact | Size / scope | Meaning |
 |---|---:|---|
 | `artifacts/qwen_relay_suite.json` | 10,970,524 bytes | Complete evidence: provenance, continuations, variants, top tokens, per-layer ranks, summaries, aggregates. |
-| `artifacts/qwen_relay_suite_summary.json` | 314,078 bytes | Deterministic compact projection used by the browser. |
-| `visualizations/qwen-concept-relay.html` | 129,701 bytes | Populated, self-contained interactive viewer. |
-| `visualizations/qwen-concept-relay.template.html` | 24,881 bytes | Source template with a data placeholder; not a populated viewer. |
+| `artifacts/qwen_relay_suite_summary.json` | build-dependent | Deterministic compact projection used by the browser, including matched control and alignment metadata. |
+| `visualizations/qwen-concept-relay.html` | build-dependent | Populated, self-contained interactive viewer. |
+| `visualizations/qwen-concept-relay.template.html` | build-dependent | Source template with a data placeholder; not a populated viewer. |
 | `artifacts/qwen_spider_trace.json` | focused drill-down | Full numerical trace for the exact spider prompt. |
 | `artifacts/qwen_spider_slice.html` | focused drill-down | Official position-by-layer interactive slice for that prompt. |
 
@@ -465,19 +490,23 @@ HTML is the result that a reader should open.
 
 | Outcome | Count | Share of all 63 prompts |
 |---|---:|---:|
-| Correct greedy first answer | 50 | 79.4% |
+| Matches expected-answer prefix | 50 | 79.4% |
 | Fully single-token measurable | 46 | 73.0% |
 | Target-specific at target peak | 48 | 76.2% |
 | Strict relay | 7 | 11.1% |
-| Incorrect first answer | 13 | 20.6% |
+| Fails expected-prefix rule | 13 | 20.6% |
 | Token-split / not fully measurable | 17 | 27.0% |
 
 Correctness, measurability, target specificity, and relay are overlapping properties;
-these rows should not be added together.
+these rows should not be added together. Specificity passes in 48 of 50 evaluable rows
+(96.0%); the table's 76.2% uses all 63 prompts, including 13 unavailable rows. The 13
+prefix failures are not all factual errors: several begin option lists, and
+`explicit-octopus` eventually says “eight” after a placeholder and preamble. The declared
+prefix metric deliberately does not score that later answer.
 
 ### 10.2 Results by family
 
-| Family | Total | Correct | Measurable | Target-specific | Strict relay |
+| Family | Total | Prefix match | Fully measurable | Target-specific | Strict J-Lens relay |
 |---|---:|---:|---:|---:|---:|
 | Animals | 18 | 17 | 14 | 13 | 5 |
 | Geometry | 15 | 13 | 6 | 6 | 0 |
@@ -486,13 +515,13 @@ these rows should not be added together.
 
 The family table exposes important asymmetries. Geometry loses many rows at the
 single-token gate because several shape names split under the tokenizer. Chemistry has
-target-specific peaks but more incorrect continuations and no strict relay cases under
+target-specific peaks but more prefix mismatches and no strict relay cases under
 the declared ordering rule. The study was not powered for inferential comparisons between
 families, so these are diagnostics, not claims of statistically different rates.
 
 ### 10.3 Hidden descriptions versus explicit baselines
 
-| Condition | Total | Correct | Measurable | Target-specific | Strict relay |
+| Condition | Total | Prefix match | Fully measurable | Target-specific | Strict J-Lens relay |
 |---|---:|---:|---:|---:|---:|
 | Hidden description | 51 | 40 | 37 | 38 | 7 |
 | Explicit target | 12 | 10 | 9 | 10 | 0 |
@@ -518,6 +547,21 @@ The repeated spider variants show that the original observation is not restricte
 exact wording. However, four closely related phrasings are not four independent conceptual
 domains, and the complete suite shows that the same ordering is far from universal.
 
+### 10.5 Matched logit-lens comparison
+
+The same prefix flag, target-rank threshold, answer-rank threshold, and strict ordering
+rule were applied to the archived logit-lens ranks, without rerunning the model:
+
+| Condition | Total | J-Lens relays | Logit-lens relays |
+|---|---:|---:|---:|
+| Hidden description | 51 | 7 | 6 |
+| Explicit target | 12 | 0 | 6 |
+| All prompts | 63 | 7 | 12 |
+
+J-Lens has a lower best target rank in 41 of 51 target-measurable rows, ties in 8, and a
+higher rank in 2. That is a different diagnostic from relay count, not a reason to omit
+the less favorable control result. Neither statistic establishes general superiority.
+
 ## 11. Worked example: spider → 8
 
 For `animal-spider`, Qwen's unedited continuation began:
@@ -541,6 +585,10 @@ The raw row also stores several valid surfaces—such as ` spider`, `Spider`, an
 for the target—rather than choosing a spelling after looking at the chart. The displayed
 line is the best rank among those declared single-token surfaces at each layer.
 
+Under the matched logit lens, `spider` peaks at rank `11` at layer `24`, and the answer
+first enters the top 10 at layer `29`. This branch also passes the strict relay rule.
+The example illustrates a real ordering in both readouts, not a uniquely J-Lens effect.
+
 This is the cleanest intuitive example of the visualization, but the aggregate claim is
 based on the full 63-row archive, including the 56 rows that do not meet the strict relay
 rule.
@@ -549,22 +597,32 @@ rule.
 
 | Validation gate | Implementation | What it establishes | What it does not establish |
 |---|---|---|---|
-| Immutable code | Full J-Lens Git commit | Repeatable library behavior | Correctness of the theory |
+| Immutable code | Full J-Lens Git commit | Fixed reference-source snapshot | A fully locked runtime or correctness of the theory |
 | Immutable model/tokenizer | Same full HF SHA plus resolved-snapshot assertion | No default-branch drift | Exact fitter checkpoint attestation |
 | Immutable lens | Full lens-repository SHA and exact file | Repeatable published artifact | Lens generalization |
-| Position contract | Shared `-1` readout plus negative regression checks | First unseen content token is targeted | Prompt validity |
+| Position contract | Shared `-1` readout plus negative regression checks | First qualifying generated token is targeted | That the token is a semantic answer |
 | Adapter parity | Direct Qwen vs adapter final logits | Adapter/readout agreement | Intermediate semantic truth |
 | Matched baseline | `use_jacobian=False` | Fair J-Lens/logit-lens comparison | Causal advantage |
 | Complete archive | 63 unique IDs, 31 layers each | No rows silently dropped | Representative sampling |
 | Aggregate reconciliation | Counts recomputed from raw rows | Summary matches evidence rows | Statistical significance |
-| Raw/compact reconciliation | Same aggregate and prompt order | Viewer data traces to raw archive | Browser implementation correctness |
+| Raw/compact reconciliation | Every projected layer rank and embedded record checked | Viewer data traces to raw archive | That archived ranks can be reconstructed without logits |
 | Browser QA | Desktop and 390 px interaction checks | Core UI and filters functioned | Every browser/device combination |
 
-At the original visualization release, all 19 automated tests passed. This documentation
-revision adds one report-contract test, bringing the current passing suite to 20 tests.
-Browser checks exercised prompt selection, branch switching, and filters at desktop and
+At the original visualization release, all 19 automated tests passed; the later report
+revision brought the suite to 20. Historical browser checks exercised prompt selection, branch switching, and filters at desktop and
 mobile widths. The strict-relay filter returned 7 rows, the token-split filter returned
-17, body width did not overflow, and no console or page errors were observed.
+17, body width did not overflow, and no console or page errors were observed. Those
+observations describe the original release, not a fresh browser verification of the
+2 October proofreading changes.
+
+The current local suite contains 24 tests, including four value-level fidelity checks.
+
+The 2 October review independently reconciled every saved row summary, prefix flag,
+coverage flag, projected rank, and embedded relay record. It restored complete raw token
+lists in the atlas, added the matched control summaries, and checked both viewers'
+JavaScript syntax and data bindings. The raw GPU archives were not modified or rerun.
+Current rendered inspection was blocked by the connected browser's `file://` policy;
+desktop/mobile interaction QA of the revised viewers remains a release follow-up.
 
 The maximum adapter/direct-model parity error was `0.0625`, observed on
 `element-silver`. The assertion tolerance is `atol=0.25`, `rtol=0.01` to accommodate
@@ -576,14 +634,16 @@ not a statistical uncertainty interval.
 ### Complete
 
 - Official J-Lens runs with the matched published Qwen artifact.
-- Model, tokenizer, lens, and library revisions are pinned.
+- Model, tokenizer, lens, and reference J-Lens source revisions are pinned. Torch and
+  Transformers versions are recorded, not locked; transitive dependency locking remains open.
 - The next-unseen-token position error is corrected and regression-tested.
 - The official five-family notebook smoke test is archived.
 - The exact spider trace and official interactive slice are archived.
 - All 63 multi-prompt rows and 31 layers per row are archived.
-- Incorrect answers and token-split cases are retained.
+- Prefix mismatches and partial single-token coverage cases are retained.
 - A deterministic raw-to-visualization build path exists.
-- The populated visualization passed desktop/mobile interaction QA.
+- The original populated visualization passed desktop/mobile interaction QA; the revised
+  viewer still needs fresh rendered QA as described above.
 - The work is committed on the `work` branch and included in PR #2.
 
 ### Not yet established
@@ -633,11 +693,12 @@ Before citing a visual or number, verify:
 - the selected prompt ID matches the claim in the text;
 - the readout branch is visibly labeled J-Lens or logit lens;
 - rank direction is explained—smaller is better;
-- token-split and incorrect cases are not described as measured successes;
+- prefix mismatches are not automatically described as factual errors, and partial
+  coverage is not described as absence of a concept;
 - a strict relay is described as satisfying declared thresholds, not as a discovered
   causal chain; and
-- every general statement is consistent with the complete `7 / 63` result, not only the
-  spider example.
+- every general statement includes the `7 / 63` J-Lens and `12 / 63` logit-lens result,
+  not only the spider example.
 
 The conceptual background and equations are expanded in
 [`understanding.md`](understanding.md). Versioned changes and earlier correctness fixes are

@@ -57,7 +57,10 @@
     .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .7fr); gap: 24px; align-items: end; margin-bottom: 14px; }
     .section-head p { color: var(--muted); font-family: ui-sans-serif, system-ui, sans-serif; }
     .controls { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 9px; align-items: end; }
-    .field { display: grid; gap: 4px; color: var(--muted); font-size: .72rem; }
+    .field { display: grid; min-width: 0; max-width: 100%; gap: 4px; color: var(--muted); font-size: .72rem; }
+    .alignment-details { padding: 14px 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: .76rem; }
+    .alignment-details summary { cursor: pointer; }
+    .alignment-details p { margin-top: 10px; }
     .stage { border: 1px solid var(--line); background: var(--panel); overflow: hidden; }
     .prompt-band { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); border-bottom: 1px solid var(--line); }
     .prompt-band > div { min-width: 0; padding: 17px 19px; }
@@ -129,20 +132,20 @@
   <main class="shell">
     <div class="eyebrow">Qwen/Qwen3.5-4B · published n=1,000 J-Lens · observed T4 run</div>
     <h1>Concept relay across 63 prompts.</h1>
-    <p class="lede">Every prompt is retained. Select any row to inspect when the hidden target, expected answer, and matched decoy become readable across depth. Rank 1 is strongest.</p>
+    <p class="lede">Every planned prompt is retained. Select a row to inspect target-concept, expected-answer, and matched-decoy ranks across depth. Rank 1 is strongest.</p>
 
     <section class="metrics" aria-label="Run summary">
       <div class="metric"><strong class="metric-value" id="metric-total">63</strong><span class="metric-label">prompts evaluated</span></div>
-      <div class="metric"><strong class="metric-value" id="metric-correct">50</strong><span class="metric-label">correct greedy continuations</span></div>
+      <div class="metric"><strong class="metric-value" id="metric-correct">50</strong><span class="metric-label">expected-answer prefix matches</span></div>
       <div class="metric"><strong class="metric-value" id="metric-measurable">46</strong><span class="metric-label">fully single-token measurable</span></div>
-      <div class="metric"><strong class="metric-value" id="metric-relay">7</strong><span class="metric-label">strict relay-pattern cases</span></div>
+      <div class="metric"><strong class="metric-value" id="metric-relay">7</strong><span class="metric-label">strict J-Lens relay cases</span></div>
     </section>
 
     <section class="section" aria-labelledby="trace-heading">
       <header class="section-head">
         <div>
-          <h2 id="trace-heading">One prompt, all 31 layers</h2>
-          <p>The trace keeps the representation you liked, now driven by any prompt in the complete run.</p>
+          <h2 id="trace-heading">One prompt, 31 fitted source layers</h2>
+          <p>Compare target, expected-answer, and decoy ranks at every measured source layer (0–30). The ordinary final-model readout is separate.</p>
         </div>
         <div class="controls">
           <label class="field">prompt<select id="prompt-select"></select></label>
@@ -152,7 +155,7 @@
       <div class="stage">
         <div class="prompt-band">
           <div><div class="small-label" id="case-label">hidden · animals</div><div class="prompt-text" id="prompt-text"></div></div>
-          <div><div class="small-label">Qwen greedy continuation</div><div class="continuation" id="continuation"></div></div>
+          <div><div class="small-label">Qwen greedy continuation · excerpt</div><div class="continuation" id="continuation"></div></div>
         </div>
         <div class="trace-wrap">
           <svg class="trace-svg" id="trace" role="img" aria-labelledby="trace-title trace-desc">
@@ -162,28 +165,30 @@
           <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
         </div>
         <div class="trace-state" id="trace-state" aria-live="polite"></div>
-        <div class="legend"><span class="target">hidden target</span><span class="answer">expected answer</span><span class="decoy">matched decoy</span></div>
+        <div class="legend"><span class="target">target concept</span><span class="answer">expected answer</span><span class="decoy">matched decoy</span></div>
+        <details class="alignment-details"><summary>Measured prefix and alignment</summary><p id="alignment"></p><pre id="readout-prefix" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre></details>
       </div>
     </section>
 
     <section class="section" aria-labelledby="map-heading">
       <header class="section-head">
         <div>
-          <h2 id="map-heading">All prompts, no cherry-pick</h2>
-          <p>Each lane places the target’s best layer and the answer’s first top-10 layer on the same depth axis. Bright connectors satisfy the strict relay definition.</p>
+          <h2 id="map-heading">All 63 planned prompts · J-Lens map</h2>
+          <p>This map always shows J-Lens, independently of the trace switch. Each lane places target peak and first answer top-10 on the same depth axis. Bright connectors satisfy the strict relay definition.</p>
+          <p id="control-comparison"></p>
         </div>
       </header>
       <div class="map-tools" aria-label="Relay map filters">
         <button type="button" data-filter="all" aria-pressed="true">all 63</button>
-        <button type="button" data-filter="correct" aria-pressed="false">correct</button>
+        <button type="button" data-filter="correct" aria-pressed="false">prefix match</button>
         <button type="button" data-filter="relay" aria-pressed="false">strict relay</button>
-        <button type="button" data-filter="incorrect" aria-pressed="false">incorrect</button>
-        <button type="button" data-filter="unmeasurable" aria-pressed="false">token-split</button>
+        <button type="button" data-filter="incorrect" aria-pressed="false">prefix mismatch</button>
+        <button type="button" data-filter="unmeasurable" aria-pressed="false">not fully measurable</button>
       </div>
-      <div class="map-scroll"><svg class="map-svg" id="relay-map" role="img" aria-labelledby="map-title map-desc"><title id="map-title">Relay map for all prompts</title><desc id="map-desc">Prompt lanes showing target peak and answer commitment layers, with correctness and measurement status.</desc></svg></div>
+      <div class="map-scroll"><svg class="map-svg" id="relay-map" role="img" aria-labelledby="map-title map-desc"><title id="map-title">J-Lens relay map for all prompts</title><desc id="map-desc">Prompt lanes showing target peak and answer commitment layers, with prefix-match and measurement status.</desc></svg></div>
       <div class="method">
-        <div><strong>Strict relay</strong>Correct generation; target reaches rank ≤100; target peak occurs before the expected answer first enters the top 10.</div>
-        <div><strong>Token-split rows stay visible</strong>If target, decoy, or answer has no single-token surface in Qwen’s vocabulary, the row is marked unmeasurable rather than removed.</div>
+        <div><strong>Strict relay</strong>Expected-answer prefix match; target reaches rank ≤100; target peak occurs before the expected answer first enters the top 10. This is descriptive, not evidence of irreversible commitment.</div>
+        <div><strong>Token-split rows stay visible</strong>A missing single-token target, decoy, or answer makes a row not fully measurable; available concept ranks remain valid. Specificity passes in 48 of 50 evaluable rows; 13 are unavailable.</div>
         <div><strong>Interpretation boundary</strong>This is a descriptive J-Lens readout—not a causal intervention and not a literal transcript of what the model “thought.”</div>
       </div>
     </section>
@@ -221,11 +226,11 @@
       const points = row.layers.filter(point => point[COL[key]] != null).map(point => [xLayer(point[0], left, width), logY(point[COL[key]], top, height)]);
       return points.map((point, index) => `${index ? "L" : "M"}${point[0].toFixed(2)},${point[1].toFixed(2)}`).join(" ");
     }
-    function statusText(row) {
-      if (!row.measurable) return "token-split concept surface";
-      if (!row.correct) return `incorrect · expected ${row.expected}`;
-      if (row.summary.relay) return "strict relay pattern observed";
-      return "correct answer · strict relay not observed";
+    function statusText(row, lens = state.lens) {
+      const summary = lens === "jlens" ? row.summary : row.logit_summary;
+      const branch = lens === "jlens" ? "J-Lens" : "logit lens";
+      const coverage = row.measurable ? "" : ` · no single-token surface: ${row.missing_surfaces.join(", ")}`;
+      return `${row.correct ? "expected-answer prefix match" : "prefix mismatch (not a full factual assessment)"} · ${branch}: strict relay ${summary.relay ? "observed" : "not observed"}${coverage}`;
     }
 
     function populate() {
@@ -237,7 +242,7 @@
         for (const row of DATA.results.filter(item => item.family === family)) {
           const option = document.createElement("option");
           option.value = row.id;
-          option.textContent = `${row.summary.relay ? "↗ " : ""}${row.target} → ${row.expected}${row.correct ? "" : " · incorrect"}`;
+          option.textContent = `${row.summary.relay ? "↗ " : ""}${row.id} · ${row.target} → ${row.expected}${row.correct ? "" : " · prefix mismatch"}`;
           group.append(option);
         }
         select.append(group);
@@ -259,6 +264,8 @@
       document.getElementById("metric-correct").textContent = `${aggregate.correct}/${aggregate.total}`;
       document.getElementById("metric-measurable").textContent = `${aggregate.measurable}/${aggregate.total}`;
       document.getElementById("metric-relay").textContent = `${aggregate.relay}/${aggregate.total}`;
+      const comparison = DATA.comparison;
+      document.getElementById("control-comparison").textContent = `Same strict rule: J-Lens ${comparison.all.jlens_relay}/${comparison.all.total}; logit lens ${comparison.all.logit_relay}/${comparison.all.total}. Hidden: ${comparison.hidden.jlens_relay}/${comparison.hidden.total} vs ${comparison.hidden.logit_relay}/${comparison.hidden.total}; explicit: ${comparison.explicit.jlens_relay}/${comparison.explicit.total} vs ${comparison.explicit.logit_relay}/${comparison.explicit.total}. This designed suite does not establish general superiority.`;
       document.getElementById("provenance").textContent = `${DATA.model} @ ${DATA.model_revision} · lens @ ${DATA.lens_revision} · ${DATA.gpu} · ${DATA.generated_at_utc}`;
       selectCase(state.selected, false);
     }
@@ -270,6 +277,8 @@
       document.getElementById("case-label").textContent = `${row.condition} · ${row.family} · target ${row.target} · decoy ${row.decoy}`;
       document.getElementById("prompt-text").textContent = row.prompt;
       document.getElementById("continuation").textContent = shortContinuation(row.continuation);
+      document.getElementById("alignment").textContent = `Measured before generated token index ${row.content_token_index} (zero-based): the first token containing a Unicode word character, including underscore, or digit. It may be an option label or placeholder rather than the answer. Final supplied prefix token: ${JSON.stringify(row.readout_token)}.`;
+      document.getElementById("readout-prefix").textContent = row.readout_prefix;
       drawTrace();
       drawMap();
       if (scrollMap) document.getElementById("trace-heading").scrollIntoView({behavior: "smooth", block: "start"});
@@ -314,8 +323,9 @@
         if (d) svg.append(el("path", {d, class: config.cls}));
       }
 
-      if (state.lens === "jlens" && row.summary.target_peak) {
-        const peak = row.summary.target_peak;
+      const summary = state.lens === "jlens" ? row.summary : row.logit_summary;
+      if (summary.target_peak) {
+        const peak = summary.target_peak;
         const x = xLayer(peak.layer, margin.left, innerW);
         const y = logY(peak.rank, margin.top, innerH);
         svg.append(el("circle", {cx: x, cy: y, r: 5.5, class: "target-mark"}));
@@ -323,9 +333,9 @@
         const labelX = anchor === "end" ? x - 6 : anchor === "start" ? x + 6 : x;
         svg.append(el("text", {x: labelX, y: y - 12, "text-anchor": anchor}, `${row.target} · ${fmtRank(peak.rank)}`));
       }
-      if (state.lens === "jlens" && row.summary.answer_commit_layer != null) {
-        const layer = row.summary.answer_commit_layer;
-        const rank = rankAt(row, layer, "jAnswer");
+      if (summary.answer_commit_layer != null) {
+        const layer = summary.answer_commit_layer;
+        const rank = rankAt(row, layer, `${prefix}Answer`);
         const x = xLayer(layer, margin.left, innerW);
         const y = logY(rank, margin.top, innerH);
         svg.append(el("rect", {x: x - 5, y: y - 5, width: 10, height: 10, class: "answer-mark"}));
@@ -395,10 +405,11 @@
         if (peak) svg.append(el("circle", {cx: xLayer(peak.layer, labelW, plotW), cy: y + rowH / 2, r: 4, class: "target-mark"}));
         if (commit != null) svg.append(el("rect", {x: xLayer(commit, labelW, plotW) - 4, y: y + rowH / 2 - 4, width: 8, height: 8, class: "answer-mark"}));
         const statusX = labelW + plotW + 12;
-        const status = !row.measurable ? "token split" : !row.correct ? "incorrect" : row.summary.relay ? "relay" : "correct";
+        const status = `${row.correct ? (row.summary.relay ? "relay" : "match") : "mismatch"}${row.measurable ? "" : " · partial"}`;
         svg.append(el("text", {x: statusX, y: y + 16, class: row.correct ? "muted" : "incorrect"}, status));
-        const hit = el("rect", {x: 0, y, width, height: rowH, class: "row-hit", role: "button", "aria-label": `Inspect ${row.id}`});
+        const hit = el("rect", {x: 0, y, width, height: rowH, class: "row-hit", role: "button", tabindex: 0, "aria-label": `Inspect ${row.id}. ${statusText(row, "jlens")}`});
         hit.addEventListener("click", () => selectCase(row.id, true));
+        hit.addEventListener("keydown", event => { if (["Enter", " "].includes(event.key)) { event.preventDefault(); selectCase(row.id, true); } });
         svg.append(hit);
       });
     }

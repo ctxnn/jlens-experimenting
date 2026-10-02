@@ -212,9 +212,9 @@ class RelaySuiteContractTest(unittest.TestCase):
     def test_visualization_exposes_failures_and_interpretation_boundary(self):
         required = (
             "Concept relay across 63 prompts",
-            "All prompts, no cherry-pick",
-            "incorrect",
-            "token-split",
+            "All 63 planned prompts",
+            "prefix mismatch",
+            "not fully measurable",
             "logit lens",
             "not a causal intervention",
             "not a literal transcript",

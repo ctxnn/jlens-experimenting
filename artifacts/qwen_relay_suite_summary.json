@@ -53,6 +53,23 @@
       "target_specific": "target outranks the matched decoy at target peak"
     }
   },
+  "comparison": {
+    "all": {
+      "total": 63,
+      "jlens_relay": 7,
+      "logit_relay": 12
+    },
+    "hidden": {
+      "total": 51,
+      "jlens_relay": 7,
+      "logit_relay": 6
+    },
+    "explicit": {
+      "total": 12,
+      "jlens_relay": 0,
+      "logit_relay": 6
+    }
+  },
   "layer_columns": [
     "layer",
     "jlens_target_rank",
@@ -73,6 +90,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the animal that spins webs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\n\nThis conclusion is based on the following logical steps:\n\n1. **Identify the animal**: The",
       "model_top10": [
         "8",
@@ -101,6 +122,14 @@
         },
         "answer_commit_layer": 29,
         "target_specific": true,
+        "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 11
+        },
+        "answer_commit_layer": 29,
         "relay": true
       },
       "layers": [
@@ -395,6 +424,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The leg count of the creature that catches insects in webs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\n\nThis conclusion is based on the following logical steps:\n\n1. **Identify the creature**: The",
       "model_top10": [
         "8",
@@ -423,6 +456,14 @@
         },
         "answer_commit_layer": 29,
         "target_specific": true,
+        "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 63
+        },
+        "answer_commit_layer": 29,
         "relay": true
       },
       "layers": [
@@ -717,6 +758,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the small creature that produces silk webs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\n\nThis conclusion is based on the following logical steps:\n\n1. The spider has 8 legs.",
       "model_top10": [
         "8",
@@ -745,6 +790,14 @@
         },
         "answer_commit_layer": 28,
         "target_specific": true,
+        "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 39
+        },
+        "answer_commit_layer": 29,
         "relay": true
       },
       "layers": [
@@ -1039,6 +1092,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the web-building creature often found in room corners is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\nA. Spider\nB. Scorpion\nC. Centipede\nD. Housefly\n\n",
       "model_top10": [
         "8",
@@ -1067,6 +1124,14 @@
         },
         "answer_commit_layer": 27,
         "target_specific": true,
+        "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 5
+        },
+        "answer_commit_layer": 29,
         "relay": true
       },
       "layers": [
@@ -1361,6 +1426,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the insect that follows colony scent trails is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\n\nThis conclusion is based on the following logical steps:\n\n1. The first insect has 6 legs",
       "model_top10": [
         "6",
@@ -1389,6 +1458,14 @@
         },
         "answer_commit_layer": 27,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 3729
+        },
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -1683,6 +1760,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the insect that makes honey is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\nThe number of legs on the insect that makes honey is 6.\nThe number of legs on",
       "model_top10": [
         "6",
@@ -1711,6 +1792,14 @@
         },
         "answer_commit_layer": 28,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 4887
+        },
+        "answer_commit_layer": 29,
         "relay": false
       },
       "layers": [
@@ -2005,6 +2094,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the winged insect that begins life as a caterpillar is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\n\nThis conclusion is based on the following logical steps:\n\n1. **Identify the insect**: The",
       "model_top10": [
         "6",
@@ -2034,6 +2127,14 @@
         "answer_commit_layer": 27,
         "target_specific": true,
         "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 4882
+        },
+        "answer_commit_layer": 28,
+        "relay": false
       },
       "layers": [
         [
@@ -2327,6 +2428,12 @@
       "expected": "8",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of arms on the sea animal that releases ink and has a rounded head is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\n\nThis conclusion is based on the following logical steps:\n\n1. The animal described has a rounded head",
       "model_top10": [
         "8",
@@ -2349,6 +2456,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 27,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -2643,6 +2755,10 @@
       "expected": "10",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the clawed crustacean that often walks sideways is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 10.\n\nThis conclusion is based on the following logical steps:\n\n1. **Identify the animal**:",
       "model_top10": [
         "1",
@@ -2671,6 +2787,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 1723
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -2965,6 +3089,13 @@
       "expected": "5",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target",
+        "decoy"
+      ],
+      "readout_prefix": "The usual number of arms on the star-shaped sea animal is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 5, but some species have 3, 6, 7, or even 10. The number",
       "model_top10": [
         "5",
@@ -2987,6 +3118,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 2,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -3281,6 +3417,10 @@
       "expected": "4",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the common pet that purrs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 4.\nThe number of legs on the common pet that purrs is 4.\nThe number of legs",
       "model_top10": [
         "4",
@@ -3309,6 +3449,14 @@
         },
         "answer_commit_layer": 7,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 417
+        },
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -3603,6 +3751,10 @@
       "expected": "4",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the common pet that barks is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 4.\nThe number of legs on the common pet that barks is 4.\nThe number of legs",
       "model_top10": [
         "4",
@@ -3631,6 +3783,14 @@
         },
         "answer_commit_layer": 7,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 25,
+          "rank": 140
+        },
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -3925,6 +4085,10 @@
       "expected": "0",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on the reptile that slithers without limbs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 0.\n\nThis conclusion is based on the following logical steps:\n\n1. The first statement says: \"The",
       "model_top10": [
         "0",
@@ -3953,6 +4117,14 @@
         },
         "answer_commit_layer": 22,
         "target_specific": false,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 27,
+          "rank": 847
+        },
+        "answer_commit_layer": 24,
         "relay": false
       },
       "layers": [
@@ -4247,6 +4419,10 @@
       "expected": "2",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of wings on the nocturnal bird that hoots is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 2.\nThe number of wings on the nocturnal bird that hoots is 2.\nThe number",
       "model_top10": [
         "2",
@@ -4275,6 +4451,14 @@
         },
         "answer_commit_layer": 2,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 1,
+          "rank": 28077
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -4569,6 +4753,12 @@
       "expected": "6",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of legs on the insect that glows at night is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\n\nThis conclusion is based on the following logical steps:\n\n1. The insect that glows at night",
       "model_top10": [
         "6",
@@ -4591,6 +4781,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 27,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -4885,6 +5080,10 @@
       "expected": "3",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of sides on the simplest polygon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 3.\nA. True\nB. False\n\n<think>\nThe user wants to determine if the statement \"The",
       "model_top10": [
         "3",
@@ -4914,6 +5113,14 @@
         "answer_commit_layer": 2,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 6
+        },
+        "answer_commit_layer": 28,
+        "relay": true
       },
       "layers": [
         [
@@ -5207,6 +5414,10 @@
       "expected": "4",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of sides on the regular quadrilateral is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 4.\n\nA regular quadrilateral is a polygon with four equal sides and four equal interior angles. The term \"",
       "model_top10": [
         "4",
@@ -5235,6 +5446,14 @@
         },
         "answer_commit_layer": 5,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 98
+        },
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -5529,6 +5748,12 @@
       "expected": "5",
       "correct": false,
       "measurable": false,
+      "missing_surfaces": [
+        "decoy"
+      ],
+      "readout_prefix": "The number of sides on the polygon whose name begins with penta is\n",
+      "readout_token": "\n",
+      "content_token_index": 1,
       "continuation": "\nA. 5\nB. 6\nC. 7\nD. 8\nAnswer:\n",
       "model_top10": [
         "A",
@@ -5557,6 +5782,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 29,
+          "rank": 42
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -5851,6 +6084,12 @@
       "expected": "6",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of sides on the polygon found in a honeycomb cell is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\nA. True\nB. False\n\n<think>\nThe user is asking a true/false question about the",
       "model_top10": [
         "6",
@@ -5873,6 +6112,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 27,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 29,
         "relay": false
       },
       "layers": [
@@ -6167,6 +6411,13 @@
       "expected": "7",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target",
+        "decoy"
+      ],
+      "readout_prefix": "The number of sides on a heptagonal polygon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 7.\nA. True\nB. False\n\n<think>\nThinking Process:\n\n1.  **Analyze",
       "model_top10": [
         "7",
@@ -6189,6 +6440,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 6,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -6483,6 +6739,13 @@
       "expected": "8",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target",
+        "decoy"
+      ],
+      "readout_prefix": "The number of sides on the shape of a standard stop sign is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\nA. True\nB. False\n\n<think>\nThinking Process:\n\n1.  **Analyze",
       "model_top10": [
         "8",
@@ -6505,6 +6768,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 27,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -6799,6 +7067,13 @@
       "expected": "9",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target",
+        "decoy"
+      ],
+      "readout_prefix": "The number of sides on a nonagonal polygon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 9.\nA. True\nB. False\n\n<think>\nThinking Process:\n\n1.  **Analyze",
       "model_top10": [
         "9",
@@ -6821,6 +7096,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 5,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -7115,6 +7395,13 @@
       "expected": "10",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target",
+        "decoy"
+      ],
+      "readout_prefix": "The number of sides on a decagonal polygon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 10.\n\nA polygon is a closed plane figure made of straight line segments. The name of a polygon is",
       "model_top10": [
         "1",
@@ -7137,6 +7424,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 23,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -7431,6 +7723,10 @@
       "expected": "0",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of straight sides on a perfectly round plane shape is:\n",
+      "readout_token": "\n",
+      "content_token_index": 2,
       "continuation": ":\nA. 0\nB. 1\nC. 2\nD. 3\n\n<think>\n",
       "model_top10": [
         "A",
@@ -7459,6 +7755,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 20,
+          "rank": 161
+        },
+        "answer_commit_layer": 2,
         "relay": false
       },
       "layers": [
@@ -7753,6 +8057,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of square faces on a standard die-shaped solid is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\n\nA standard die is a cube, which has 6 faces in total. Each face of a cube",
       "model_top10": [
         "6",
@@ -7782,6 +8090,14 @@
         "answer_commit_layer": 6,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 22,
+          "rank": 2
+        },
+        "answer_commit_layer": 28,
+        "relay": true
       },
       "layers": [
         [
@@ -8075,6 +8391,12 @@
       "expected": "4",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of triangular faces on the simplest Platonic solid is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 4. This solid is the regular tetrahedron, which consists of four equilateral triangles as its faces,",
       "model_top10": [
         "4",
@@ -8097,6 +8419,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 4,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 29,
         "relay": false
       },
       "layers": [
@@ -8391,6 +8718,12 @@
       "expected": "8",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of faces on the Platonic solid made from eight triangles is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8.\n\nA Platonic solid is a convex polyhedron where all faces are congruent regular polygons, and",
       "model_top10": [
         "8",
@@ -8413,6 +8746,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 7,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 28,
         "relay": false
       },
       "layers": [
@@ -8707,6 +9045,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the element that forms diamond is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6. What is the name of this element?\n\n<think>\nThinking Process:\n\n1.  **Analyze",
       "model_top10": [
         "6",
@@ -8735,6 +9077,14 @@
         },
         "answer_commit_layer": 4,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 28,
+          "rank": 2
+        },
+        "answer_commit_layer": 27,
         "relay": false
       },
       "layers": [
@@ -9029,6 +9379,10 @@
       "expected": "2",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the noble gas used in party balloons is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 54. What is the name of this element?\n\n<think>\nThinking Process:\n\n1.  **An",
       "model_top10": [
         "5",
@@ -9057,6 +9411,14 @@
         },
         "answer_commit_layer": 2,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 1
+        },
+        "answer_commit_layer": 0,
         "relay": false
       },
       "layers": [
@@ -9351,6 +9713,10 @@
       "expected": "8",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the gas humans need to breathe is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6. What is the name of this gas?\n\n<think>\nThinking Process:\n\n1.  **Analyze",
       "model_top10": [
         "6",
@@ -9379,6 +9745,14 @@
         },
         "answer_commit_layer": 4,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 9
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -9673,6 +10047,10 @@
       "expected": "11",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the metallic element in ordinary table salt is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 17. What is the name of this element?\n\n<think>\nThinking Process:\n\n1.  **An",
       "model_top10": [
         "1",
@@ -9701,6 +10079,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 2
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -9995,6 +10381,12 @@
       "expected": "26",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "answer"
+      ],
+      "readout_prefix": "The atomic number of the element whose symbol is Fe is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 26. What is the number of protons in an atom of this element?\n\n<think>\n\n</think>\n\n###",
       "model_top10": [
         "2",
@@ -10020,6 +10412,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 28,
+          "rank": 2
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -10314,6 +10714,12 @@
       "expected": "79",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "answer"
+      ],
+      "readout_prefix": "The atomic number of the precious metal whose symbol is Au is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 79. What is the number of protons in an atom of this metal?\n\n<think>\n\n</think>\n\n###",
       "model_top10": [
         "7",
@@ -10339,6 +10745,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 1
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -10633,6 +11047,10 @@
       "expected": "1",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the lightest element is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 1. What is the atomic number of the element that is 100 times heavier than the lightest element",
       "model_top10": [
         "1",
@@ -10661,6 +11079,14 @@
         },
         "answer_commit_layer": 2,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 1
+        },
+        "answer_commit_layer": 0,
         "relay": false
       },
       "layers": [
@@ -10955,6 +11381,10 @@
       "expected": "7",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the gas that makes up most of Earth's atmosphere is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 2.\n\n<think>\n\n</think>\n\nThe gas that makes up most of Earth's atmosphere is **nitrogen** ($",
       "model_top10": [
         "2",
@@ -10983,6 +11413,14 @@
         },
         "answer_commit_layer": 4,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 29,
+          "rank": 14
+        },
+        "answer_commit_layer": 30,
         "relay": false
       },
       "layers": [
@@ -11277,6 +11715,10 @@
       "expected": "80",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the metal that is liquid at room temperature is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 47. What is the name of this metal?\n\n<think>\n\n</think>\n\nBased on the information provided, here",
       "model_top10": [
         "4",
@@ -11305,6 +11747,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 27,
+          "rank": 35
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -11599,6 +12049,12 @@
       "expected": "47",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "answer"
+      ],
+      "readout_prefix": "The atomic number of the precious metal whose symbol is Ag is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 47. What is the number of electrons in a neutral atom of this element?\n\n<think>\nHere's my",
       "model_top10": [
         "4",
@@ -11624,6 +12080,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 2
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -11918,6 +12382,10 @@
       "expected": "10",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the noble gas associated with bright advertising signs is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 54. What is the name of this element?\n\n<think>\nThinking Process:\n\n1.  **An",
       "model_top10": [
         "5",
@@ -11946,6 +12414,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 26,
+          "rank": 11
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -12240,6 +12716,10 @@
       "expected": "14",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of the element used as the base material in most computer chips is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 14. What is the name of this element?\n\n<think>\n\n</think>\n\nThe element with an atomic number of",
       "model_top10": [
         "1",
@@ -12268,6 +12748,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 22,
+          "rank": 3
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -12562,6 +13050,10 @@
       "expected": "Paris",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing the Eiffel Tower is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Paris.\n\nThe Eiffel Tower is located in France. The capital of France is Paris.\n\nTherefore, the capital",
       "model_top10": [
         " Paris",
@@ -12591,6 +13083,14 @@
         "answer_commit_layer": 24,
         "target_specific": true,
         "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 34
+        },
+        "answer_commit_layer": 25,
+        "relay": false
       },
       "layers": [
         [
@@ -12884,6 +13384,10 @@
       "expected": "Tokyo",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country known as the Land of the Rising Sun is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Tokyo. This fact is confirmed by multiple reliable sources, including the United Nations and the Japanese government. Tokyo is the largest",
       "model_top10": [
         " Tokyo",
@@ -12912,6 +13416,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 60
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -13206,6 +13718,10 @@
       "expected": "Cairo",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing the pyramids of Giza is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Cairo. This city is the capital of Egypt, a nation located in northeastern Africa. The pyramids of Giza,",
       "model_top10": [
         " Cairo",
@@ -13234,6 +13750,14 @@
         },
         "answer_commit_layer": 26,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 29,
+          "rank": 66
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -13528,6 +14052,10 @@
       "expected": "Rome",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing the Colosseum is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Rome.\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request:** The user is making a statement",
       "model_top10": [
         " Rome",
@@ -13557,6 +14085,14 @@
         "answer_commit_layer": 27,
         "target_specific": true,
         "relay": true
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 111
+        },
+        "answer_commit_layer": 27,
+        "relay": false
       },
       "layers": [
         [
@@ -13850,6 +14386,10 @@
       "expected": "Ottawa",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country whose flag bears a maple leaf is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Ottawa. This fact is confirmed by the official designation of Ottawa as the national capital of Canada, a nation whose national symbol",
       "model_top10": [
         " Ottawa",
@@ -13878,6 +14418,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 1
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -14172,6 +14720,10 @@
       "expected": "Madrid",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the European country famous for the Sagrada Familia is\n",
+      "readout_token": "\n",
+      "content_token_index": 1,
       "continuation": "\nA. Madrid\nB. Rome\nC. Paris\nD. Lisbon\n\n<think>\nThinking Process:\n\n1",
       "model_top10": [
         "A",
@@ -14200,6 +14752,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 17199
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -14494,6 +15054,10 @@
       "expected": "Berlin",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing the Brandenburg Gate is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Berlin.\n\nThe Brandenburg Gate is located in Berlin, Germany. Berlin is the capital city of Germany.\n\nTherefore,",
       "model_top10": [
         " Berlin",
@@ -14522,6 +15086,14 @@
         },
         "answer_commit_layer": 9,
         "target_specific": false,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 84
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -14816,6 +15388,10 @@
       "expected": "Athens",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing the Acropolis is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Athens.\n\nThe Acropolis is an ancient citadel located in Athens, Greece. It is one of the most famous",
       "model_top10": [
         " Athens",
@@ -14844,6 +15420,14 @@
         },
         "answer_commit_layer": 26,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 10
+        },
+        "answer_commit_layer": 29,
         "relay": false
       },
       "layers": [
@@ -15138,6 +15722,10 @@
       "expected": "Canberra",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing Sydney and Melbourne is:\n",
+      "readout_token": "\n",
+      "content_token_index": 2,
       "continuation": ":\nA. Canberra\nB. Sydney\nC. Melbourne\nD. Perth\n\n<think>\nThinking Process:\n\n",
       "model_top10": [
         "A",
@@ -15166,6 +15754,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 558
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -15460,6 +16056,10 @@
       "expected": "Brasilia",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the country containing Rio de Janeiro is\n",
+      "readout_token": "\n",
+      "content_token_index": 1,
       "continuation": "\nA. Buenos Aires\nB. Brasilia\nC. Brazil\nD. Rio de Janeiro\n\n<think>\nThinking",
       "model_top10": [
         "A",
@@ -15488,6 +16088,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 8863
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -15782,6 +16390,10 @@
       "expected": "Nairobi",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the East African country famous for the Maasai Mara is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Nairobi.\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request:**\n    *   Input:",
       "model_top10": [
         " Nairobi",
@@ -15810,6 +16422,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 25,
+          "rank": 23
+        },
+        "answer_commit_layer": 24,
         "relay": false
       },
       "layers": [
@@ -16104,6 +16724,10 @@
       "expected": "Bangkok",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of the Southeast Asian country formerly called Siam is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Bangkok.\n\n<think>\nThinking Process:\n\n1.  **Analyze the Request:**\n    *   Input:",
       "model_top10": [
         " Bangkok",
@@ -16132,6 +16756,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 30,
+          "rank": 53
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -16426,6 +17058,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on a spider is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8. The number of legs on a centipede is 10 more than the number of legs on a",
       "model_top10": [
         "8",
@@ -16455,6 +17091,14 @@
         "answer_commit_layer": 21,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 5
+        },
+        "answer_commit_layer": 28,
+        "relay": true
       },
       "layers": [
         [
@@ -16748,6 +17392,12 @@
       "expected": "8",
       "correct": false,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of arms on an octopus is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " __________.\n\n<think>\n\n</think>\n\nThe number of arms on an octopus is **eight**.\n\nOctopuses",
       "model_top10": [
         " __",
@@ -16770,6 +17420,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": null,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -17064,6 +17719,10 @@
       "expected": "4",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of legs on a dog is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 4. The number of legs on a cat is 4. The number of legs on a rabbit is 4",
       "model_top10": [
         "4",
@@ -17093,6 +17752,14 @@
         "answer_commit_layer": 7,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 2
+        },
+        "answer_commit_layer": 25,
+        "relay": true
       },
       "layers": [
         [
@@ -17386,6 +18053,10 @@
       "expected": "3",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of sides on a triangle is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 3.\nThe number of sides on a quadrilateral is 4.\nThe number of sides on a pent",
       "model_top10": [
         "3",
@@ -17415,6 +18086,14 @@
         "answer_commit_layer": 2,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 4
+        },
+        "answer_commit_layer": 28,
+        "relay": true
       },
       "layers": [
         [
@@ -17708,6 +18387,12 @@
       "expected": "6",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "target"
+      ],
+      "readout_prefix": "The number of sides on a hexagon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\nThe number of sides on a heptagon is 7.\nThe number of sides on an",
       "model_top10": [
         "6",
@@ -17730,6 +18415,11 @@
         "logit_target_peak": null,
         "answer_commit_layer": 15,
         "target_specific": null,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": null,
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -18024,6 +18714,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The number of square faces on a cube is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6.\n\nA cube is a three-dimensional shape with six identical square faces. Each face is a perfect square,",
       "model_top10": [
         "6",
@@ -18053,6 +18747,14 @@
         "answer_commit_layer": 6,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 22,
+          "rank": 1
+        },
+        "answer_commit_layer": 28,
+        "relay": true
       },
       "layers": [
         [
@@ -18346,6 +19048,10 @@
       "expected": "6",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of carbon is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 6. How many electrons are in a neutral atom of carbon?\n\n<think>\n\n</think>\n\n### Step-by-Step",
       "model_top10": [
         "6",
@@ -18375,6 +19081,14 @@
         "answer_commit_layer": 5,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 2
+        },
+        "answer_commit_layer": 27,
+        "relay": true
       },
       "layers": [
         [
@@ -18668,6 +19382,10 @@
       "expected": "8",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The atomic number of oxygen is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 8. How many electrons are in a neutral atom of oxygen?\n\n<think>\n\n</think>\n\n### Step-by-Step",
       "model_top10": [
         "8",
@@ -18697,6 +19415,14 @@
         "answer_commit_layer": 6,
         "target_specific": true,
         "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 2
+        },
+        "answer_commit_layer": 27,
+        "relay": true
       },
       "layers": [
         [
@@ -18990,6 +19716,12 @@
       "expected": "79",
       "correct": true,
       "measurable": false,
+      "missing_surfaces": [
+        "answer"
+      ],
+      "readout_prefix": "The atomic number of gold is ",
+      "readout_token": " ",
+      "content_token_index": 1,
       "continuation": " 79. How many electrons are in a neutral atom of gold?\n\n<think>\n\n</think>\n\n### Step-by-",
       "model_top10": [
         "7",
@@ -19015,6 +19747,14 @@
         },
         "answer_commit_layer": null,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 23,
+          "rank": 1
+        },
+        "answer_commit_layer": null,
         "relay": false
       },
       "layers": [
@@ -19309,6 +20049,10 @@
       "expected": "Paris",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of France is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Paris.\nA. True\nB. False\nAnswer:\nA\n\nWhich of the following is NOT a reason",
       "model_top10": [
         " Paris",
@@ -19337,6 +20081,14 @@
         },
         "answer_commit_layer": 23,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 25,
+          "rank": 17
+        },
+        "answer_commit_layer": 23,
         "relay": false
       },
       "layers": [
@@ -19631,6 +20383,10 @@
       "expected": "Tokyo",
       "correct": true,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of Japan is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " Tokyo.\nA. True\nB. False\nAnswer:\nA\n\nWhich of the following is NOT a characteristic",
       "model_top10": [
         " Tokyo",
@@ -19659,6 +20415,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 25,
+          "rank": 49
+        },
+        "answer_commit_layer": 24,
         "relay": false
       },
       "layers": [
@@ -19953,6 +20717,10 @@
       "expected": "Brasilia",
       "correct": false,
       "measurable": true,
+      "missing_surfaces": [],
+      "readout_prefix": "The capital of Brazil is",
+      "readout_token": " is",
+      "content_token_index": 0,
       "continuation": " located in the state of Rio de Janeiro.\nA. True\nB. False\n\n<think>\nThinking Process:\n\n",
       "model_top10": [
         " located",
@@ -19981,6 +20749,14 @@
         },
         "answer_commit_layer": 24,
         "target_specific": true,
+        "relay": false
+      },
+      "logit_summary": {
+        "target_peak": {
+          "layer": 24,
+          "rank": 2
+        },
+        "answer_commit_layer": 24,
         "relay": false
       },
       "layers": [

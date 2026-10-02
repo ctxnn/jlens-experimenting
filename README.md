@@ -30,9 +30,9 @@ to make the next load fail:
 colab restart-kernel -s jlens-qwen
 ```
 
-The current CLI can save an output notebook and return exit code 0 even when an individual
-cell contains an exception. Audit the saved notebook explicitly before treating the run as
-successful:
+In the observed CLI 0.6.0 run, the command could save an output notebook and return exit
+code 0 even when an individual cell contained an exception. Audit the saved notebook
+explicitly before treating any run as successful:
 
 ```bash
 jq '[.cells[].outputs[]? | select(.output_type == "error")] | length' \
@@ -56,7 +56,8 @@ colab stop -s jlens-relay-suite
 python3 experiments/build_relay_visualization.py
 ```
 
-The builder produces a compact reviewed dataset and a self-contained HTML visualization.
+The builder produces a compact dataset, a self-contained relay visualization, and the
+atlas's complete token lists from the archived five-prompt validation.
 It does not rerun the model or alter the measured ranks.
 
 The notebook pins the reference library to commit
@@ -81,7 +82,8 @@ silently invalidating the pairing.
   depth, and the causal readout horizon.
 - A real-data [`visualizations/qwen-concept-relay.html`](visualizations/qwen-concept-relay.html)
   spanning 63 prompts, with per-layer target/answer/decoy traces, J-Lens and logit-lens
-  controls, correctness states, token-split rows, and an all-prompt relay map.
+  controls, answer-prefix matching states, partial token coverage, and an all-prompt
+  J-Lens relay map.
 - The complete `artifacts/qwen_relay_suite.json` archive and compact
   `artifacts/qwen_relay_suite_summary.json` used by the standalone visualization.
 - A focused `artifacts/qwen_spider_trace.json` plus official
@@ -128,15 +130,23 @@ No prompt was removed from the archived dataset or visualization.
 
 - `50 / 63` greedy continuations began with the expected answer;
 - `46 / 63` cases had single-token surfaces for target, decoy, and expected answer;
-- the target outranked its matched decoy at the target peak in `48 / 63` cases;
+- the target outranked its matched decoy in 48 of 50 evaluable cases; 13 lacked target
+  or decoy coverage (`48 / 63` of the full suite);
 - `7 / 63` met the strict relay definition; and
 - the maximum adapter/direct-model parity error was `0.0625`.
 
-Strict relay means: the generation is correct, the target reaches rank `≤ 100`, and its
-best layer occurs before the expected answer first enters the top 10. This is a declared
-descriptive threshold, not a causal test. Incorrect outputs and concepts split across
-multiple tokenizer tokens remain visible so the result cannot be read as a cherry-picked
-success gallery.
+Strict relay means: the continuation matches an expected-answer prefix, the target
+reaches rank `≤ 100`, and its best layer occurs before the expected answer first enters
+the top 10. This is a declared
+descriptive threshold, not a causal test. A prefix mismatch can reflect formatting or a
+non-answer preamble, not necessarily a factual error; the complete continuations remain
+in the archive. Missing single-token surfaces remain visible, without discarding the
+concepts that can still be measured.
+
+Applying the same strict rule to the archived logit-lens ranks yields `12 / 63` relays:
+6 of 51 hidden-description cases and 6 of 12 explicit cases, compared with J-Lens's 7
+hidden and 0 explicit cases. The exact spider example passes under both branches. This
+designed suite does not establish J-Lens superiority or a uniquely J-Lens relay.
 
 ## Why this is a justified Qwen test
 
@@ -171,7 +181,8 @@ python -m unittest discover -s tests -v
 python -m json.tool notebooks/qwen_official_jlens.ipynb >/dev/null
 ```
 
-Numerical model execution and rendering happen in the GPU notebook.
+Numerical model execution happens in Colab. The standalone viewers are built locally from
+the saved measurements; rebuilding them does not require a GPU.
 
 ## Reading the results correctly
 

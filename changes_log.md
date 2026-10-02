@@ -12,6 +12,24 @@ its experiment contract:
 The repository is currently pre-1.0 because its expanded prompt suite remains a designed
 descriptive readout study, not a causal intervention benchmark or independent lens fit.
 
+## Release proofreading — 2026-10-02
+
+- Preserved the 0.5.0 experiment protocol and all raw GPU measurements; no new model run.
+- Clarified expected-answer prefix matching versus full factual accuracy, partial
+  single-token coverage, and specificity's 50-row evaluable denominator (48 pass).
+- Reported the matched logit-lens relay result: 12/63, versus J-Lens 7/63; the exact
+  spider ordering appears in both branches. Removed implied preregistration language.
+- Exposed measured-prefix/alignment metadata and branch-specific trace markers; labeled
+  the all-prompt map and relay total as J-Lens, independent of the trace switch.
+- Restored all raw top-10 decoded lists in the concept atlas and made their rebuild
+  deterministic from the validation archive and notebook prompts. Display normalization
+  no longer alters stored values. Previously plotted overlap values were unchanged.
+- Clarified that source/model/lens revisions are pinned while transitive runtime
+  dependencies are recorded, not locked.
+- Added value-level regressions for all projected ranks, matched-control derivation,
+  embedded data, and atlas source fidelity. Fresh rendered QA of the revised viewers is
+  still pending because the connected browser blocked local `file://` inspection.
+
 ## [0.5.0] — 2026-08-27
 
 ### Added

@@ -17,7 +17,7 @@ before reproducing the algorithm independently. It answers:
    by the reference project?
 4. Are we reading the position that predicts the *first unseen completion token* rather
    than reconstructing a token already supplied in the prompt?
-5. Across a preregistered-style suite that retains failures, does a hidden target become
+5. Across a fixed 63-prompt suite that retains failures, does a hidden target become
    readable before the model commits to its answer?
 
 It does **not** establish that a decoded token is causally necessary or sufficient for a
@@ -196,6 +196,9 @@ The grid should be read as follows:
 - **Pinned token:** a token selected for rank tracking through position and depth.
 - **Rank:** full-vocabulary order, where rank zero is highest.
 
+That zero-based convention belongs to the official interactive slice. The custom relay
+suite uses one-based competition ranks (`1` is strongest), as labeled in its viewer.
+
 `mask_display=True` restricts displayed winners to word-like tokens for readability; it
 does not change the underlying full-vocabulary rank calculation. A beautiful grid is not
 a success criterion on its own: it must be interpreted beside position semantics,
@@ -278,7 +281,7 @@ descriptions and 12 explicit-entity baselines across four domains. Each row reco
 layers while removing repeated surface-variant detail that the browser does not need.
 
 The standalone visualization has two linked views: a selected prompt's target/answer/
-decoy rank trace and an all-prompt relay map. Incorrect answers and token-split concepts
+decoy rank trace and an all-prompt relay map. Prefix mismatches and token-split concepts
 are visible and filterable. The chart therefore shows where the pattern fails as well as
 where it appears.
 
@@ -303,7 +306,7 @@ inspect its distribution rather than treating a single threshold as universally 
 ## 8. How to run and inspect
 
 1. Open `notebooks/qwen_official_jlens.ipynb` in Google Colab.
-2. Select an L4 or A100 GPU runtime.
+2. Select an L4 or A100 GPU runtime, or the validated T4 fallback.
 3. Run cells from top to bottom without skipping installation or assertions.
 4. Confirm the printed GPU, full model and lens revision SHAs, model wrapper, and lens metadata are expected.
 5. For every prompt, confirm the printed readout token is labeled as predicting the next
@@ -355,17 +358,28 @@ pinned, and the largest adapter/direct-model parity error was `0.0625`.
 | Outcome | Observed result |
 |---|---:|
 | Prompt rows retained | `63 / 63` |
-| Correct greedy continuations | `50 / 63` |
+| Expected-answer prefix matches | `50 / 63` |
 | Fully single-token measurable | `46 / 63` |
-| Target outranks matched decoy at target peak | `48 / 63` |
+| Target outranks matched decoy at target peak | `48 / 50` evaluable (`48 / 63` overall; 13 unavailable) |
 | Strict relay-pattern cases | `7 / 63` |
 
-Strict relay is a declared descriptive rule: correct generation; target rank reaches
+Strict relay is a declared descriptive rule: expected-answer prefix match; target rank reaches
 `≤ 100`; target peak occurs before the expected answer first reaches rank `≤ 10`. Seven
 cases met it: four spider phrasings, butterfly, France→Paris, and Italy→Rome. This small
-count is a boundary on the claim, not a defect to hide. Many correct answers did not show
+count is a boundary on the claim, not a defect to hide. Many prefix-matching continuations did not show
 the same ordering, several chemistry completions were wrong, and 17 rows could not be
 fully scored because at least one concept had no single-token surface.
+
+The archived `correct` flag measures only an expected-answer prefix, not the factual
+accuracy of the whole continuation. Option lists and later correct answers can fail it.
+The readout is before the first generated token containing a word character, including
+underscore, or digit; for some rows this is an option label or placeholder, not an answer.
+
+Applying the identical relay rule to the stored logit-lens ranks produces 12 cases:
+6 of 51 hidden and 6 of 12 explicit prompts, versus J-Lens's 7 hidden and 0 explicit cases.
+The spider example passes under both branches (logit-lens target peak rank 11, J-Lens
+rank 14, both at layer 24; answer first top-10 at layer 29). The data does not establish a
+uniquely J-Lens relay or overall J-Lens superiority.
 
 The multi-prompt run supports the statement “Qwen sometimes exhibits a readable
 target-to-answer relay under this J-Lens and metric.” It does not support “Qwen generally
@@ -397,7 +411,8 @@ Do not infer:
 | Shape/layer error | Model and lens mismatch | Do not substitute another Qwen checkpoint. |
 | Parity assertion fails | position, dtype, adapter, or version mismatch | Inspect max error; verify pinned dependency and `-1` on both branches. |
 | Odd decoded fragments | subword tokenizer behavior | Inspect token IDs and ranks; do not concatenate interpretations casually. |
-| Blank visualization | iframe/browser restriction or interrupted build | save/open the HTML artifact and rerun the visualization cell. |
+| Blank relay visualization | source template opened or interrupted build | Open generated `visualizations/qwen-concept-relay.html`, not `.template.html`; rerun `python3 experiments/build_relay_visualization.py` if needed. |
+| Blank official slice | iframe/browser restriction | Save/open the generated HTML artifact and rerun the visualization cell if needed. |
 | Results seem to echo prompt ending | wrong position or copying | confirm `READOUT_POSITION=-1` and inspect input-token ranks. |
 
 ## 13. Repository map
@@ -405,6 +420,7 @@ Do not infer:
 ```text
 .
 ├── README.md                         quick start and experiment contract
+├── experiment.md                     chronological experiment and current progress
 ├── understanding.md                  detailed conceptual/code walkthrough
 ├── changes_log.md                    versioned history and fixes
 ├── artifacts/
