@@ -4,11 +4,34 @@ This repository deliberately starts by validating Anthropic's official
 [`jlens`](https://github.com/anthropics/jacobian-lens) library rather than
 reimplementing the algorithm from scratch.
 
+For the new real-data graphics and paper-inspired Qwen intervention pilot, open
+[`visualizations/qwen-iteration2.html`](visualizations/qwen-iteration2.html) and read
+[`iteration2.md`](iteration2.md). Iteration 2 keeps hidden-description prompts separate
+from named-entity calibrations, shows matched controls and actual continuations, and
+exports blog-ready SVGs. It does not train Qwen or refit the published lens.
+The complete Iteration 2 run contains **40 real prompts and 80 SVG figures**; browse the
+[figure gallery](visualizations/iteration2/index.html) for individual exports.
+
 For the complete chronological setup, measurement definitions, execution steps, observed
-results, and current progress, read [`experiment.md`](experiment.md). For the conceptual
-model, code walkthrough, diagrams, artifact schema, and interpretation guide, read
+results, and Iteration 1 progress, read [`experiment.md`](experiment.md). For the Iteration 1
+conceptual model, code walkthrough, diagrams, artifact schema, and interpretation guide, read
 [`understanding.md`](understanding.md). Version history and scientific fixes are recorded
 in [`changes_log.md`](changes_log.md).
+
+## Publication status
+
+The measured data supports an exploratory explainer; it is not a literal thought trace,
+a general causal-mediation benchmark, or a replication of the paper's Claude intervention.
+The corrected intervention exports include next-token alias-mass qualifications and the
+actual saved continuations. Their bars and text use different intervention scopes, labelled
+in every figure. All measured examples remain available through the
+[visualization index](visualizations/index.html).
+
+Automated evidence and selector checks are not a substitute for browser QA. The connected
+browser blocks these local-file pages, so final interactive desktop/mobile rendering and
+accessibility acceptance remain pending. See the [publication gate](iteration2.md#publication-gate).
+For bundled official inspector code and standalone-file distribution, retain the
+[third-party notices and license texts](THIRD_PARTY_NOTICES.md).
 
 ## Run in Google Colab
 
@@ -176,13 +199,29 @@ fit and would confound library validation with fitting quality.
 
 ## Local structural checks
 
+Open the [visualization directory](visualizations/index.html) for all viewers and
+the figure gallery. Their minimal UI preserves the archived measurements and chart scales.
+
 ```bash
 python -m unittest discover -s tests -v
 python -m json.tool notebooks/qwen_official_jlens.ipynb >/dev/null
+node tests/test_iteration2_viewer.js
+node tests/test_minimal_viewers.js
 ```
 
 Numerical model execution happens in Colab. The standalone viewers are built locally from
 the saved measurements; rebuilding them does not require a GPU.
+
+To rebuild the Iteration 2 viewer and vector figures from its saved archives:
+
+```bash
+python3 experiments/build_iteration2_visualization.py
+```
+
+Open the generated `.html`, not the `.template.html` source. See `iteration2.md` for
+the separate protocol, archived runtime versions, reproduction steps, and scientific
+limits. Interactive browser-rendered QA for Iteration 2 is still pending; numerical,
+source-fidelity, and DOM-fixture checks do not substitute for it.
 
 ## Reading the results correctly
 

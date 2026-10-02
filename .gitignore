@@ -1,5 +1,15 @@
 __pycache__/
 .pytest_cache/
-artifacts/
+artifacts/*
+!artifacts/iteration2/
+artifacts/iteration2/*
+!artifacts/iteration2/qwen_iteration2.json
+!artifacts/iteration2/qwen_iteration2.pilot.json
+!artifacts/iteration2/qwen_iteration2_hidden.json
+!artifacts/iteration2/qwen_iteration2_hidden.pilot.json
+!artifacts/iteration2/colab_execution.ipynb
+!artifacts/iteration2/colab_execution_hidden.ipynb
+!artifacts/iteration2/colab_execution_hidden_failed.ipynb
+!artifacts/iteration2/run_manifest.json
 notebooks/*_output.ipynb
 *.py[cod]

@@ -1,11 +1,13 @@
 # Qwen J-Lens Experiment: Setup, Execution, Evidence, and Progress
 
-> **Experiment version:** 0.5.0<br>
+> **Experiment version:** 0.5.0 (Iteration 1 snapshot)<br>
 > **Results snapshot:** 27 August 2026<br>
 > **Documentation updated:** 2 October 2026<br>
 > **Status:** the official-library validation, focused spider trace, 63-prompt
-> descriptive study, and real-data visualization are complete. Causal interventions
-> and independent lens fitting have not been performed.
+> descriptive study, and Iteration 1 visualization are complete. This snapshot is
+> readout-only. The new paper-inspired Qwen intervention pilot and graphics are
+> documented separately in [iteration2.md](iteration2.md); no independent lens fit
+> has been performed.
 
 ## Technical summary
 

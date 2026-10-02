@@ -9,8 +9,57 @@ its experiment contract:
   documentation.
 - **PATCH:** correction that preserves the intended experiment design.
 
-The repository is currently pre-1.0 because its expanded prompt suite remains a designed
-descriptive readout study, not a causal intervention benchmark or independent lens fit.
+The repository is currently pre-1.0: it contains a designed readout study and a small
+paper-inspired intervention pilot, not an independent lens fit or a validated general
+causal-mediation benchmark.
+
+## [0.6.0] — Iteration 2 — 2026-10-02
+
+- Corrected all 40 standalone intervention exports: explicitly label next-token alias
+  mass rather than whole-answer probability; show the saved clean/edited continuations;
+  distinguish single-prefix bars from sustained generation edits. Retained negative,
+  unchanged, unintended, and unavailable outcomes without changing any measured value.
+- Marked `understanding.md` as an Iteration 1 snapshot and clarified hand-designed prompt
+  versus measured-trajectory provenance. Removed an unverifiable present-tense live-session
+  assertion from the archive summary.
+- Added pinned third-party license texts and notices, including complete embedded copies
+  and modification notices in the two standalone official inspectors. Their data and
+  renderer scripts are unchanged.
+- Rechecked the connected browser; its local-file URL policy still blocks interactive QA.
+  Browser-rendered and accessibility acceptance remain pending rather than reported as passed.
+- Added publication regressions for all 40 intervention captions, saved continuations,
+  fixed-layer generation labels, deterministic exports, raw archive hashes, snapshot
+  framing, and embedded licenses. All 51 Python tests and both Node fixtures pass.
+
+- Preserved Iteration 1 and added a separate, import-safe Qwen inference/intervention
+  runner using the same pinned model, tokenizer, official library, and n=1,000 lens.
+- Completed 20 explicit calibrations and a subsequent frozen, paired 20-prompt
+  description-only follow-up on Tesla T4. The follow-up is exploratory, not held out.
+- Used a fixed supplied trailing space and final prefix position, replacing the earlier
+  answer-dependent alignment for this new experiment only.
+- Recorded 31-layer J-Lens/logit-lens readouts, six-layer prefix-position maps, actual
+  continuations, and five intervention/control conditions at six layers.
+- Archived 1,068 executed and 132 unavailable intervention records; retained every prompt.
+  All 204 executed no-op checks have zero logit change; maximum final parity error is 0.0625.
+- Added a self-contained reader, paired-version navigation, exact token/vector diagnostics,
+  an all-example table, a figure gallery, and 80 deterministic blog-ready SVGs.
+- Simplified the reader to a neutral, figure-first layout with Depth / Position /
+  Intervention views and collapsed supporting detail. Removed the large hero and cards;
+  preserved the measurements, exports, and every example without rerunning Qwen.
+- Extended the minimal styling to the Iteration 1 atlas and relay reader, both official
+  token inspectors, the gallery, and all 80 SVGs. Removed gradients, decorative token
+  chips, and metric tiles; added one-view navigation to the relay and collapsible gallery
+  examples. Raw data, inspector scripts, and numeric figure geometry are unchanged.
+- Added `iteration2.md`, immutable input/runner hashes, a run manifest, execution histories,
+  and archive/figure/selector-state regressions. All 44 Python tests and both Node fixture
+  checks pass. Representative native SVG previews were visually inspected; interactive
+  browser-rendered and accessibility QA remain pending.
+- Kept negative effects and unintended answers visible. The original hidden-spider
+  layer-24 edit shifts the answer margin +4.63 pp but still answers 8; a paraphrase
+  answers 4 rather than the intended 6. This is not the paper's clamped Claude replication,
+  a literal thought trace, or evidence of general privileged causal mediation.
+- Exported the failed hidden-session history, retried that pass as one uninterrupted cell,
+  downloaded all complete data, and released the Colab sessions. No Qwen training occurred.
 
 ## Release proofreading — 2026-10-02
 

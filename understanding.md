@@ -5,6 +5,11 @@
 > **Scope:** applying and validating Anthropic's published Jacobian lens; no lens fitting
 > or from-scratch Jacobian implementation is performed in this repository.
 
+This guide is an **Iteration 1 snapshot**, including the repository map and next-step
+recommendations below. The current paper-inspired Qwen coordinate-swap pilot, paired
+40-prompt study, controls, and figure exports are documented in [iteration2.md](iteration2.md).
+No new lens fitting has been performed in either iteration.
+
 ## 1. Purpose and research boundary
 
 This project is a controlled first step: prove that the official `jlens` package, a
@@ -415,7 +420,7 @@ Do not infer:
 | Blank official slice | iframe/browser restriction | Save/open the generated HTML artifact and rerun the visualization cell if needed. |
 | Results seem to echo prompt ending | wrong position or copying | confirm `READOUT_POSITION=-1` and inspect input-token ranks. |
 
-## 13. Repository map
+## 13. Repository map — Iteration 1 snapshot
 
 ```text
 .
@@ -446,7 +451,7 @@ Do not infer:
 └── .gitignore                        prevents accidental future output churn
 ```
 
-## 14. Next steps after official-library validation
+## 14. Next steps after official-library validation — historical plan
 
 ```mermaid
 flowchart LR
@@ -459,8 +464,12 @@ flowchart LR
     G --> H[Corpus-size and intervention studies]
 ```
 
-Recommended improvements are: a machine-readable environment manifest, a held-out prompt
+The original recommendations were: a machine-readable environment manifest, a held-out prompt
 generation protocol, sequence-level scoring for multi-token concepts, copying diagnostics,
 uncertainty analysis for the relay thresholds, a causal coordinate-swap implementation,
 and a GPU CI smoke test if model access and cost allow it. From-scratch work should begin
 only after this reference run is archived and understood.
+
+Iteration 2 now supplies a run manifest and an exploratory coordinate-swap implementation.
+It does not supply a held-out benchmark, sequence-level concept scoring, uncertainty
+estimates, or general causal mediation evidence. See [its method and limitations](iteration2.md).
