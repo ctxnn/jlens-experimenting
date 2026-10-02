@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "source_archives": [
+    {
+      "kind": "explicit-entity calibration",
+      "path": "../artifacts/iteration2/qwen_iteration2.json",
+      "sha256": "1e1f39b557157ed1fb32505b8ffe87f2ab4d630a1c0d32bfb8e9da23643b7e0d",
+      "protocol_sha256": "a123e86f68d477f2add1eb4561faddd650e3554aa939b8a37f61b43bed9c2558",
+      "started_at": "2026-10-02T13:12:51.780326+00:00",
+      "runtime": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "huggingface_hub": "1.31.0",
+        "python": "3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]",
+        "cuda": "13.0",
+        "gpu": "Tesla T4",
+        "dtype": "bfloat16",
+        "resolved_model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "resolved_lens_path": "/root/.cache/huggingface/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
+      },
+      "validation": {
+        "completed": 20,
+        "planned": 20,
+        "available_concept_swaps": 102,
+        "unavailable_interventions": 66
+      }
+    },
+    {
+      "kind": "hidden-description follow-up",
+      "path": "../artifacts/iteration2/qwen_iteration2_hidden.json",
+      "sha256": "5581ddab5b0a7c191527655c8d74130f598eade52f48c239417b817771fb93fc",
+      "protocol_sha256": "a5fcda942af73dcf0d14e3ab5e09c07ca9e7ec281f4005587601fe9059d6ab06",
+      "started_at": "2026-10-02T14:05:59.149104+00:00",
+      "runtime": {
+        "torch": "2.11.0+cu130",
+        "transformers": "5.17.0",
+        "huggingface_hub": "1.31.0",
+        "python": "3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]",
+        "cuda": "13.0",
+        "gpu": "Tesla T4",
+        "dtype": "bfloat16",
+        "resolved_model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "resolved_lens_path": "/root/.cache/huggingface/hub/models--neuronpedia--jacobian-lens/snapshots/16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a/qwen3.5-4b/jlens/Salesforce-wikitext/Qwen3.5-4B_jacobian_lens_n1000.pt"
+      },
+      "validation": {
+        "completed": 20,
+        "planned": 20,
+        "available_concept_swaps": 102,
+        "unavailable_interventions": 66
+      }
+    }
+  ],
+  "validation": {
+    "completed": 40,
+    "planned": 40,
+    "available_concept_swaps": 204,
+    "unavailable_interventions": 132
+  },
+  "runner_sha256": "7d533b65589b9c6190ba59b2f9eb64aac7e6d7407fe30c410e73d51dec1060bf",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "lens_revision": "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a",
+  "svg_figures": 80,
+  "html_sha256": "0b44feb36f5c725923df3cb3d02d7ff3ab24fd851472239f72f325c8b6059781",
+  "rendered_qa": {
+    "svg": "Builder does not perform visual QA; see iteration2.md for sample inspection",
+    "interactive": "Browser rendering not verified"
+  },
+  "known_limits": [
+    "Designed sequential follow-up; not held out",
+    "Unclamped single-layer token edits",
+    "One random seed per case/layer",
+    "Single-token alias mass, not whole-answer probability",
+    "No-op is gated by concept-pair availability",
+    "Supplied trailing space can hurt clean completion"
+  ],
+  "runs": [
+    {
+      "kind": "explicit-entity calibration",
+      "completed": 20,
+      "planned": 20,
+      "layer24_measurable_effects": 15,
+      "layer24_positive_effects": 13,
+      "layer24_negative_effects": 2,
+      "maximum_final_readout_logit_error": 0.0625,
+      "maximum_no_op_logit_change": 0.0
+    },
+    {
+      "kind": "hidden-description follow-up",
+      "completed": 20,
+      "planned": 20,
+      "layer24_measurable_effects": 15,
+      "layer24_positive_effects": 11,
+      "layer24_negative_effects": 4,
+      "maximum_final_readout_logit_error": 0.0625,
+      "maximum_no_op_logit_change": 0.0
+    }
+  ]
+}
