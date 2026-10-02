@@ -1,7 +1,7 @@
 # Understanding the Official J-Lens × Qwen Experiment
 
 > **Document version:** 1.0
-> **Experiment version:** 0.3.2
+> **Experiment version:** 0.5.0
 > **Scope:** applying and validating Anthropic's published Jacobian lens; no lens fitting
 > or from-scratch Jacobian implementation is performed in this repository.
 
@@ -17,10 +17,13 @@ before reproducing the algorithm independently. It answers:
    by the reference project?
 4. Are we reading the position that predicts the *first unseen completion token* rather
    than reconstructing a token already supplied in the prompt?
+5. Across a fixed 63-prompt suite that retains failures, does a hidden target become
+   readable before the model commits to its answer?
 
 It does **not** establish that a decoded token is causally necessary or sufficient for a
-model behavior. It does not fit new Jacobians, benchmark corpus-size convergence, or
-claim that five hand-written prompts measure general performance.
+model behavior. It does not fit new Jacobians or benchmark corpus-size convergence. The
+63-prompt suite broadens descriptive coverage, but it is still a designed qualitative
+evaluation rather than a population estimate.
 
 ## 2. Pinned components and why they are paired
 
@@ -124,8 +127,11 @@ a slow or misleading partial run.
 ### Cell group 2 — matched model and lens
 
 The notebook loads Qwen in bfloat16 on CUDA and loads its tokenizer with the same immutable
-Hugging Face revision. It asserts the resolved model configuration commit equals
-`MODEL_REVISION`, prints that value, and later records it in the JSON report. It then wraps the Hugging
+Hugging Face revision. It asks `hf_hub_download` for `config.json` at that revision, extracts
+the resolved commit from the returned immutable `snapshots/<sha>/...` cache path, and asserts
+that it equals `MODEL_REVISION`. This avoids Transformers' private `_commit_hash` field, which
+is `None` for this model/runtime combination even when loading by an exact SHA. The resolved
+value is printed and recorded separately in the JSON report. The notebook then wraps the Hugging
 Face model using `jlens.from_hf`, then downloads the published lens using
 `JacobianLens.from_pretrained` at the immutable `LENS_REVISION` commit. `LENS_SOURCE_REF`
 retains the human-readable `qwen-n1000` branch name only as report provenance; it is not
@@ -190,6 +196,9 @@ The grid should be read as follows:
 - **Pinned token:** a token selected for rank tracking through position and depth.
 - **Rank:** full-vocabulary order, where rank zero is highest.
 
+That zero-based convention belongs to the official interactive slice. The custom relay
+suite uses one-based competition ranks (`1` is strongest), as labeled in its viewer.
+
 `mask_display=True` restricts displayed winners to word-like tokens for readability; it
 does not change the underlying full-vocabulary rank calculation. A beautiful grid is not
 a success criterion on its own: it must be interpreted beside position semantics,
@@ -205,6 +214,7 @@ Conceptual schema:
 {
   "model": "Qwen/Qwen3.5-4B",
   "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "resolved_model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
   "lens_revision": "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a",
   "lens_source_ref": "qwen-n1000",
   "readout_position": -1,
@@ -232,7 +242,48 @@ not automatically a better or more interpretable J-Lens.
 ### `artifacts/qwen_ascii_face_slice.html`
 
 A self-contained interactive view suitable for download from Colab. Treat it as an
-experiment output, so `artifacts/` is gitignored rather than committed.
+experiment output. The verified Iteration 1 copy is committed explicitly; the directory
+remains ignored so later runs do not silently replace the archived evidence.
+
+### `visualizations/jlens-concept-atlas.html`
+
+A self-contained explanatory companion built from the committed validation report. It
+contains three linked views:
+
+1. **Transport** keeps the residual fixed while contrasting
+   `W_U N(J_l h_l,p)` with the matched identity-path control `W_U N(h_l,p)`.
+2. **Emergence braid** compares each branch's top-10 set with the ordinary model's final
+   top-10 across layers. The plotted value is set overlap, not confidence or accuracy.
+3. **Causal horizon** shows why position `-1` predicts an unseen continuation while
+   position `-2` reconstructs a supplied token.
+
+This atlas is an interpretation aid, not a new experiment. It does not add local-Jacobian
+measurements, interventions, or evidence for causal mediation. Control characters in token
+labels are normalized for readability; the underlying values remain in the JSON archive.
+
+### Multi-prompt relay artifacts
+
+`experiments/qwen_relay_suite.py` evaluates 63 prompts with the same pinned model, lens,
+adapter parity check, and matched logit-lens control. The population contains 51 hidden
+descriptions and 12 explicit-entity baselines across four domains. Each row records:
+
+- the target, expected answer, and matched decoy;
+- Qwen's unedited greedy continuation and whether it starts with an expected alias;
+- the best single-token surface rank for all three concepts at every layer under J-Lens
+  and logit lens;
+- final-readout parity and full provenance; and
+- declared summary fields for target peak, answer commitment, target specificity, and
+  the strict relay criterion.
+
+`artifacts/qwen_relay_suite.json` is the complete 10 MB evidence archive.
+`artifacts/qwen_relay_suite_summary.json` is a deterministic compact projection used by
+`visualizations/qwen-concept-relay.html`. The builder preserves all prompt IDs and 31
+layers while removing repeated surface-variant detail that the browser does not need.
+
+The standalone visualization has two linked views: a selected prompt's target/answer/
+decoy rank trace and an all-prompt relay map. Prefix mismatches and token-split concepts
+are visible and filterable. The chart therefore shows where the pattern fails as well as
+where it appears.
 
 ## 7. Validation gates and what each proves
 
@@ -244,7 +295,7 @@ experiment output, so `artifacts/` is gitignored rather than committed.
 | Position | shared `READOUT_POSITION=-1` plus tests | next unseen token is targeted | correct prompt design |
 | Parity | `torch.allclose` API vs HF logits | adapter final readout agrees | J-Lens is meaningful |
 | Control | `use_jacobian=False` | matched logit-lens baseline | causal superiority |
-| Diversity | five prompt families | several phenomena are exercised | statistical generalization |
+| Diversity | five notebook families plus 63 relay prompts | several phenomena and domains are exercised without dropping failures | statistical generalization |
 | Rank | top-10 overlap and slice ranks | ranking differences are measurable | higher behavioral accuracy |
 | Structural tests | notebook-source assertions | critical experiment contract remains present | numerical execution succeeds |
 
@@ -255,7 +306,7 @@ inspect its distribution rather than treating a single threshold as universally 
 ## 8. How to run and inspect
 
 1. Open `notebooks/qwen_official_jlens.ipynb` in Google Colab.
-2. Select an L4 or A100 GPU runtime.
+2. Select an L4 or A100 GPU runtime, or the validated T4 fallback.
 3. Run cells from top to bottom without skipping installation or assertions.
 4. Confirm the printed GPU, full model and lens revision SHAs, model wrapper, and lens metadata are expected.
 5. For every prompt, confirm the printed readout token is labeled as predicting the next
@@ -266,7 +317,75 @@ inspect its distribution rather than treating a single threshold as universally 
 9. Download both files in `artifacts/` before the Colab runtime is deleted.
 10. Record GPU type, package versions, and unexpected warnings with the artifacts.
 
-## 9. Reading results responsibly
+## 9. Iteration 1 live verification
+
+The first end-to-end validation run used Google Colab CLI 0.6.0 and a clean Tesla T4
+kernel on 2026-08-23. L4 allocation was unavailable for the authenticated account, so
+the documented T4 fallback was used. The run established:
+
+| Check | Observed result |
+|---|---|
+| Notebook error outputs | `0` |
+| Prompt families completed | `5 / 5` |
+| Requested model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
+| Resolved model revision | `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
+| Lens revision | `16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a` |
+| Maximum final-readout parity error | `0.03125` |
+| JSON report | generated |
+| Interactive HTML | generated, 1,823,422 bytes |
+
+The qualitative readouts were coherent in several late-layer examples: the multihop
+prompt ranked `Euro` first at layer 30, the typo prompt ranked `Paris` first at layer 30,
+and the ASCII-face prompt ranked `nose` first at layers 24 and 30. These examples are
+descriptive smoke-test evidence only; they are not an accuracy benchmark or causal claim.
+
+The HTML title and expected rank/interaction markup passed static inspection. Manual Chrome
+QA covered position/layer selections `(16, 12)`, `(14, 24)`, and `(17, 31)`. In every state,
+the URL parameters, matrix highlight, selected vocabulary item, pin list, heatmap marker,
+layer trajectory, and position trajectory agreed. This closes the visual-QA follow-up for
+the official slice.
+
+The generated JSON, official HTML slice, and executed notebook are committed as an explicit
+Iteration 1 archive. Normal ignore rules remain in place to prevent accidental churn from
+future runs; replacing the archive should be a deliberate reviewed change.
+
+## 10. Multi-prompt relay verification
+
+The 2026-08-27 Tesla T4 run completed all 63 prompts and all 31 published source layers.
+Requested and resolved model revisions matched, the published lens revision remained
+pinned, and the largest adapter/direct-model parity error was `0.0625`.
+
+| Outcome | Observed result |
+|---|---:|
+| Prompt rows retained | `63 / 63` |
+| Expected-answer prefix matches | `50 / 63` |
+| Fully single-token measurable | `46 / 63` |
+| Target outranks matched decoy at target peak | `48 / 50` evaluable (`48 / 63` overall; 13 unavailable) |
+| Strict relay-pattern cases | `7 / 63` |
+
+Strict relay is a declared descriptive rule: expected-answer prefix match; target rank reaches
+`≤ 100`; target peak occurs before the expected answer first reaches rank `≤ 10`. Seven
+cases met it: four spider phrasings, butterfly, France→Paris, and Italy→Rome. This small
+count is a boundary on the claim, not a defect to hide. Many prefix-matching continuations did not show
+the same ordering, several chemistry completions were wrong, and 17 rows could not be
+fully scored because at least one concept had no single-token surface.
+
+The archived `correct` flag measures only an expected-answer prefix, not the factual
+accuracy of the whole continuation. Option lists and later correct answers can fail it.
+The readout is before the first generated token containing a word character, including
+underscore, or digit; for some rows this is an option label or placeholder, not an answer.
+
+Applying the identical relay rule to the stored logit-lens ranks produces 12 cases:
+6 of 51 hidden and 6 of 12 explicit prompts, versus J-Lens's 7 hidden and 0 explicit cases.
+The spider example passes under both branches (logit-lens target peak rank 11, J-Lens
+rank 14, both at layer 24; answer first top-10 at layer 29). The data does not establish a
+uniquely J-Lens relay or overall J-Lens superiority.
+
+The multi-prompt run supports the statement “Qwen sometimes exhibits a readable
+target-to-answer relay under this J-Lens and metric.” It does not support “Qwen generally
+reasons by a two-word chain,” and it provides no spider-to-ant causal intervention.
+
+## 11. Reading results responsibly
 
 A useful result is a repeatable difference between J-Lens and the matched logit-lens
 control whose token ranks align with a defensible semantic hypothesis. It is stronger if
@@ -279,9 +398,10 @@ Do not infer:
 - that low top-k overlap means higher quality;
 - that copying a prompt token is a latent concept;
 - that parity validates prompt position (the original `-2` bug demonstrates otherwise);
-- that these five prompts estimate population-level performance.
+- that either the five-prompt smoke test or designed 63-prompt suite estimates
+  population-level performance.
 
-## 10. Failure modes and troubleshooting
+## 12. Failure modes and troubleshooting
 
 | Symptom | Likely cause | Action |
 |---|---|---|
@@ -291,24 +411,42 @@ Do not infer:
 | Shape/layer error | Model and lens mismatch | Do not substitute another Qwen checkpoint. |
 | Parity assertion fails | position, dtype, adapter, or version mismatch | Inspect max error; verify pinned dependency and `-1` on both branches. |
 | Odd decoded fragments | subword tokenizer behavior | Inspect token IDs and ranks; do not concatenate interpretations casually. |
-| Blank visualization | iframe/browser restriction or interrupted build | save/open the HTML artifact and rerun the visualization cell. |
+| Blank relay visualization | source template opened or interrupted build | Open generated `visualizations/qwen-concept-relay.html`, not `.template.html`; rerun `python3 experiments/build_relay_visualization.py` if needed. |
+| Blank official slice | iframe/browser restriction | Save/open the generated HTML artifact and rerun the visualization cell if needed. |
 | Results seem to echo prompt ending | wrong position or copying | confirm `READOUT_POSITION=-1` and inspect input-token ranks. |
 
-## 11. Repository map
+## 13. Repository map
 
 ```text
 .
 ├── README.md                         quick start and experiment contract
+├── experiment.md                     chronological experiment and current progress
 ├── understanding.md                  detailed conceptual/code walkthrough
 ├── changes_log.md                    versioned history and fixes
+├── artifacts/
+│   ├── qwen_validation.json          archived numerical validation report
+│   ├── qwen_ascii_face_slice.html    official interactive position × layer slice
+│   ├── qwen_spider_trace.json        focused exact-prompt rank trace
+│   ├── qwen_spider_slice.html        focused official interactive slice
+│   ├── qwen_relay_suite.json         complete 63-prompt evidence archive
+│   └── qwen_relay_suite_summary.json compact browser-ready projection
+├── experiments/
+│   ├── qwen_spider_trace.py          focused exact-prompt drill-down
+│   ├── qwen_relay_suite.py           pinned multi-prompt GPU evaluation
+│   └── build_relay_visualization.py  deterministic compact-data/HTML builder
 ├── notebooks/
-│   └── qwen_official_jlens.ipynb     executable Colab GPU experiment
+│   ├── qwen_official_jlens.ipynb     executable Colab GPU experiment
+│   └── qwen_official_jlens_output.ipynb  archived executed notebook
+├── visualizations/
+│   ├── jlens-concept-atlas.html      evidence-grounded conceptual explainer
+│   ├── qwen-concept-relay.template.html source template
+│   └── qwen-concept-relay.html       self-contained real-data visualization
 ├── tests/
 │   └── test_notebook.py              structural regression contract
-└── .gitignore                        excludes generated artifacts/caches
+└── .gitignore                        prevents accidental future output churn
 ```
 
-## 12. Next steps after official-library validation
+## 14. Next steps after official-library validation
 
 ```mermaid
 flowchart LR
@@ -321,8 +459,8 @@ flowchart LR
     G --> H[Corpus-size and intervention studies]
 ```
 
-Recommended improvements are: a machine-readable environment manifest, multiple prompt
-instances per family, explicit calibration/evaluation separation metadata, token-level
-copying diagnostics, rank-of-target curves, and a GPU CI smoke test if model access and
-cost allow it. From-scratch work should begin only after this reference run is archived
-and understood.
+Recommended improvements are: a machine-readable environment manifest, a held-out prompt
+generation protocol, sequence-level scoring for multi-token concepts, copying diagnostics,
+uncertainty analysis for the relay thresholds, a causal coordinate-swap implementation,
+and a GPU CI smoke test if model access and cost allow it. From-scratch work should begin
+only after this reference run is archived and understood.

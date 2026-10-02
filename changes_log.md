@@ -9,8 +9,122 @@ its experiment contract:
   documentation.
 - **PATCH:** correction that preserves the intended experiment design.
 
-The repository is currently pre-1.0 because the official GPU experiment has not yet been
-archived with committed numerical results.
+The repository is currently pre-1.0 because its expanded prompt suite remains a designed
+descriptive readout study, not a causal intervention benchmark or independent lens fit.
+
+## Release proofreading — 2026-10-02
+
+- Preserved the 0.5.0 experiment protocol and all raw GPU measurements; no new model run.
+- Clarified expected-answer prefix matching versus full factual accuracy, partial
+  single-token coverage, and specificity's 50-row evaluable denominator (48 pass).
+- Reported the matched logit-lens relay result: 12/63, versus J-Lens 7/63; the exact
+  spider ordering appears in both branches. Removed implied preregistration language.
+- Exposed measured-prefix/alignment metadata and branch-specific trace markers; labeled
+  the all-prompt map and relay total as J-Lens, independent of the trace switch.
+- Restored all raw top-10 decoded lists in the concept atlas and made their rebuild
+  deterministic from the validation archive and notebook prompts. Display normalization
+  no longer alters stored values. Previously plotted overlap values were unchanged.
+- Clarified that source/model/lens revisions are pinned while transitive runtime
+  dependencies are recorded, not locked.
+- Added value-level regressions for all projected ranks, matched-control derivation,
+  embedded data, and atlas source fidelity. Fresh rendered QA of the revised viewers is
+  still pending because the connected browser blocked local `file://` inspection.
+
+## [0.5.0] — 2026-08-27
+
+### Added
+
+- Added `experiments/qwen_relay_suite.py`, a pinned 63-prompt GPU evaluation with 51
+  hidden-description cases, 12 explicit-entity baselines, four domains, matched decoys,
+  greedy continuations, and per-layer J-Lens/logit-lens ranks.
+- Added the focused exact-prompt `qwen_spider_trace.py` experiment, numerical trace, and
+  official interactive slice as a reproducible drill-down beside the broader suite.
+- Added the complete `artifacts/qwen_relay_suite.json` evidence archive and deterministic
+  compact `artifacts/qwen_relay_suite_summary.json` projection.
+- Added `visualizations/qwen-concept-relay.html`, a self-contained real-data reader with
+  selectable 31-layer traces, J-Lens/logit-lens switching, correctness/tokenization
+  states, and an all-prompt relay map. Its source template and deterministic builder are
+  included for reproducibility.
+- Added regression coverage for immutable revisions, complete prompt retention, raw-to-
+  compact reconciliation, observed aggregate counts, and scientific caveats.
+
+### Observed
+
+- Completed all `63 / 63` prompts on a Tesla T4 using the pinned Qwen and lens revisions.
+- Observed `50 / 63` correct greedy continuations, `46 / 63` fully single-token measurable
+  rows, `48 / 63` target-specific peaks, and `7 / 63` strict relay-pattern cases.
+- Recorded maximum adapter/direct-model parity error `0.0625`.
+- Retained incorrect answers and 17 token-split rows instead of filtering the visual to
+  favorable examples.
+
+### Verified
+
+- Reconciled aggregate counts independently against raw result rows; all prompt IDs were
+  unique and every prompt contained 31 layer records.
+- Rendered and visually inspected the standalone HTML at desktop and mobile widths.
+- Exercised prompt selection, J-Lens/logit-lens switching, strict-relay filtering, and
+  token-split filtering at 1440 px and 390 px with no browser console errors or body
+  overflow. The relay and token-split filters returned 7 and 17 rows respectively.
+
+### Interpretation boundary
+
+The strict relay rule is descriptive: correct generation, target rank at most 100, and
+target peak before the expected answer first enters the top 10. It is not a causal
+spider-to-ant intervention or a literal transcript of model thought.
+
+## [0.4.0] — 2026-08-24
+
+### Added
+
+- Archived the verified Iteration 1 JSON report, official interactive slice, and executed
+  output notebook in source control.
+- Added `visualizations/jlens-concept-atlas.html`, a self-contained three-view explainer:
+  Jacobian transport versus the identity control, semantic emergence through depth, and
+  the causal `-1` readout horizon.
+- Grounded the atlas in the committed Qwen run and labeled top-10 overlap as set agreement,
+  never as confidence, accuracy, or causal proof.
+- Added documentation and structural coverage for the visualization contract.
+
+### Verified
+
+- Manual Chrome QA exercised three independent position/layer selections in the official
+  slice. Matrix highlights, selected tokens, pins, heatmap markers, and both rank charts
+  remained synchronized.
+- The concept atlas parses without JavaScript syntax errors and is checked at desktop and
+  mobile viewport sizes.
+
+## [0.3.3] — 2026-08-23
+
+### Fixed
+
+- Replaced the runtime assertion on Transformers' private
+  `hf_model.config._commit_hash` field with a check of the immutable Hugging Face cache
+  path returned by `hf_hub_download`.
+- Recorded `resolved_model_revision` separately from the requested `model_revision` in
+  `artifacts/qwen_validation.json`.
+- Added regression coverage that rejects `_commit_hash` and requires the resolved
+  snapshot SHA check.
+- Added stable, unique IDs to every notebook cell and regression coverage for them,
+  removing the `MissingIDFieldWarning` emitted by the real Colab CLI run and preventing
+  a future `nbformat` validation failure.
+- Replaced the stale browser-only Colab handoff with the tested CLI runbook, including
+  L4-to-T4 fallback, clean-kernel reruns, runtime cleanup, and an explicit audit for error
+  outputs because CLI notebook execution can return exit code 0 after a cell exception.
+- Added documentation regression coverage for the CLI command and error audit.
+- Ignored the CLI-generated `notebooks/*_output.ipynb` files so validation evidence can
+  remain local without polluting source-control status.
+- Documented the Iteration 1 T4 run: five prompt families, zero output-notebook error
+  cells, matching requested/resolved model revisions, maximum parity error `0.03125`, and
+  both expected artifacts generated.
+- Kept interactive browser rendering explicitly open after local URL security blocked it.
+
+### Why this fix matters
+
+The first real Colab CLI run loaded the pinned model successfully, but Qwen's resolved
+configuration exposed `_commit_hash = None`. The old assertion therefore failed because
+it depended on private Transformers metadata, not because the requested snapshot drifted.
+The Hugging Face cache path includes `snapshots/<resolved-sha>/...`, so checking that value
+verifies the pin using the artifact resolver that actually served the configuration.
 
 ## [0.3.2] — 2026-08-23
 

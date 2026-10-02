@@ -1,0 +1,636 @@
+{
+  "model": "Qwen/Qwen3.5-4B",
+  "model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "resolved_model_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "lens_revision": "16a01f309fcec900fdcec3f4cd5b64f3d00e4d5a",
+  "lens_source_ref": "qwen-n1000",
+  "readout_position": -1,
+  "readout_semantics": "logits after the final supplied token predict the first unseen token",
+  "prompts": {
+    "multihop": {
+      "model_parity_max_abs_error": 0.03125,
+      "model_top10": [
+        " the",
+        " called",
+        " a",
+        " Euro",
+        " not",
+        " ",
+        " known",
+        " Euros",
+        " used",
+        " Italy"
+      ],
+      "layers": {
+        "8": {
+          "jlens_top10": [
+            " ...",
+            "...",
+            " \n",
+            " [...]",
+            " \\",
+            "____",
+            "\uff0e",
+            "\uff1b",
+            "\uff1f",
+            "________"
+          ],
+          "logit_lens_top10": [
+            "\u0432\u043b\u0430\u0436",
+            " litri",
+            " Moms",
+            "\u0648\u0627\u0633",
+            " %@\",",
+            "urge",
+            " nemlig",
+            "__;",
+            "]?.",
+            "\u6218\u7565\u5e03\u5c40"
+          ],
+          "top10_overlap": 0.0
+        },
+        "16": {
+          "jlens_top10": [
+            "\\n",
+            ".\\",
+            "____",
+            "\\\"",
+            "?\\",
+            " ___",
+            ".\\\"",
+            "___",
+            " ____",
+            "________"
+          ],
+          "logit_lens_top10": [
+            "\u539f\u4ef6\u53ca\u590d\u5370\u4ef6",
+            "\u0448\u0442\u0435",
+            " fond",
+            "\u53d8\u66f4\u4e3a",
+            "egot",
+            " thinly",
+            "otin",
+            "\u1ea5t",
+            "aren",
+            "hq"
+          ],
+          "top10_overlap": 0.0
+        },
+        "24": {
+          "jlens_top10": [
+            " currency",
+            " dollars",
+            " euros",
+            " Dollars",
+            " Dollar",
+            " dollar",
+            "\u8d27\u5e01",
+            " Currency",
+            " USD",
+            " euro"
+          ],
+          "logit_lens_top10": [
+            " called",
+            "called",
+            "currency",
+            " Dollars",
+            " fiat",
+            "\u0e1a\u0e32\u0e17",
+            "\ud3d0",
+            "\u53eb",
+            "coins",
+            " euros"
+          ],
+          "top10_overlap": 0.2
+        },
+        "30": {
+          "jlens_top10": [
+            " Euro",
+            " the",
+            " Euros",
+            " euros",
+            " euro",
+            " called",
+            " EUR",
+            " EURO",
+            " \u20ac",
+            " known"
+          ],
+          "logit_lens_top10": [
+            " called",
+            " the",
+            " Euros",
+            " Euro",
+            " known",
+            " euros",
+            " commonly",
+            " pounds",
+            "\u30e6\u30fc",
+            " NOT"
+          ],
+          "top10_overlap": 0.6
+        }
+      }
+    },
+    "multilingual": {
+      "model_parity_max_abs_error": 0.015625,
+      "model_top10": [
+        " in",
+        " the",
+        " next",
+        " on",
+        " a",
+        " my",
+        " located",
+        " not",
+        " at",
+        " very"
+      ],
+      "layers": {
+        "8": {
+          "jlens_top10": [
+            " ...",
+            "...",
+            " [...]",
+            "'",
+            " \n",
+            "......",
+            " ...\"",
+            "...'",
+            " '",
+            " \\"
+          ],
+          "logit_lens_top10": [
+            "\u8bc9",
+            "\u4e16\u5916",
+            "omer",
+            "\u5f88\u96be",
+            " naudoj",
+            "\u0432\u0440\u043e\u043f\u0435\u0439",
+            " \u043e\u0442\u043d\u043e",
+            "_now",
+            "antino",
+            "\u8d77\u4e86"
+          ],
+          "top10_overlap": 0.0
+        },
+        "16": {
+          "jlens_top10": [
+            "____",
+            "___",
+            " ____",
+            " ___",
+            "________",
+            " ______",
+            "_____",
+            "__",
+            " _____",
+            "\\\""
+          ],
+          "logit_lens_top10": [
+            " \u0645\u0644\u0643",
+            "\u4eca\u5929\u65e9\u4e0a",
+            "\u854a",
+            " \u043e\u0442\u043d\u043e",
+            "brand",
+            "bro",
+            "\u03b4\u03b5\u03b9",
+            "\u6da8\u52bf",
+            "____",
+            "_lin"
+          ],
+          "top10_overlap": 0.1
+        },
+        "24": {
+          "jlens_top10": [
+            " beautiful",
+            " located",
+            " nice",
+            " ours",
+            " inside",
+            " upstairs",
+            " houses",
+            " situated",
+            " called",
+            " yours"
+          ],
+          "logit_lens_top10": [
+            " theirs",
+            " ours",
+            " yours",
+            "\u0431\u0443\u0434\u044c\u0442\u0435",
+            " neighbour",
+            "integrazione",
+            "fault",
+            "\u6211\u5bb6",
+            "\u5f88\u597d\u5403",
+            " hers"
+          ],
+          "top10_overlap": 0.2
+        },
+        "30": {
+          "jlens_top10": [
+            " next",
+            " beautiful",
+            " near",
+            " located",
+            " very",
+            " nice",
+            " mine",
+            " my",
+            " situated",
+            " ours"
+          ],
+          "logit_lens_top10": [
+            " ours",
+            " next",
+            " theirs",
+            " mine",
+            " yours",
+            " located",
+            " hers",
+            "ours",
+            " near",
+            "next"
+          ],
+          "top10_overlap": 0.5
+        }
+      }
+    },
+    "typo": {
+      "model_parity_max_abs_error": 0.03125,
+      "model_top10": [
+        " Paris",
+        " ______",
+        " __",
+        "\n\n",
+        "...",
+        " ___",
+        " ____",
+        " P",
+        " ...",
+        " in"
+      ],
+      "layers": {
+        "8": {
+          "jlens_top10": [
+            " ...",
+            "...",
+            " [...]",
+            "......",
+            "\n\n",
+            "\n",
+            "...'",
+            " ...\\",
+            " \n",
+            "(...)"
+          ],
+          "logit_lens_top10": [
+            "\u7684\u786e",
+            "\u0e23\u0e21",
+            " mno\u017e",
+            " indeed",
+            "UPDATED",
+            "{name",
+            "ADDRESS",
+            "rokes",
+            ".hxx",
+            "\u0432\u0435\u0434\u0435\u043d"
+          ],
+          "top10_overlap": 0.0
+        },
+        "16": {
+          "jlens_top10": [
+            "____",
+            " ____",
+            " ______",
+            "...",
+            "________",
+            "___",
+            " _____",
+            " ...",
+            " ___",
+            "_____"
+          ],
+          "logit_lens_top10": [
+            "____",
+            "obili",
+            "FillColor",
+            "places",
+            "embra",
+            "bro",
+            " integri",
+            "\u0624\u0644",
+            " integra",
+            " Tijd"
+          ],
+          "top10_overlap": 0.1
+        },
+        "24": {
+          "jlens_top10": [
+            " Paris",
+            "____",
+            "...",
+            "Paris",
+            " France",
+            "\n\n",
+            "...\\",
+            "___",
+            " ___",
+            " ____"
+          ],
+          "logit_lens_top10": [
+            "____",
+            "urin",
+            "...\\",
+            "bourg",
+            "Paris",
+            "\u5df4\u9ece",
+            ".........",
+            "...)",
+            "...**",
+            "located"
+          ],
+          "top10_overlap": 0.3
+        },
+        "30": {
+          "jlens_top10": [
+            " Paris",
+            " ____",
+            " Pari",
+            " ______",
+            " __",
+            " ___",
+            " _____",
+            "____",
+            " London",
+            " ________"
+          ],
+          "logit_lens_top10": [
+            " Paris",
+            " __",
+            " ___",
+            " ______",
+            "____",
+            " ____",
+            "Paris",
+            " located",
+            " __________________",
+            "________"
+          ],
+          "top10_overlap": 0.6
+        }
+      }
+    },
+    "ordering": {
+      "model_parity_max_abs_error": 0.03125,
+      "model_top10": [
+        " ",
+        " the",
+        " __",
+        " a",
+        " ______",
+        " ____",
+        "\n\n",
+        ":",
+        " ___",
+        " in"
+      ],
+      "layers": {
+        "8": {
+          "jlens_top10": [
+            ".",
+            ",",
+            "'",
+            ";",
+            "\u00b7",
+            " '",
+            " ...",
+            "...",
+            ":",
+            "'."
+          ],
+          "logit_lens_top10": [
+            " therefore",
+            " theirs",
+            "\u663e\u7136",
+            " yours",
+            "%A",
+            "_queues",
+            " indeed",
+            " hereby",
+            "\u25cb\u25cb",
+            "ache"
+          ],
+          "top10_overlap": 0.0
+        },
+        "16": {
+          "jlens_top10": [
+            "____",
+            ".",
+            "________",
+            " ______",
+            " ____",
+            ".\\",
+            "?",
+            " _____",
+            " ________",
+            "\\\""
+          ],
+          "logit_lens_top10": [
+            "\ufffd",
+            " therefore",
+            "\u25cb\u25cb",
+            "uri",
+            "\u4fd1",
+            " ovviamente",
+            "enna",
+            "din",
+            "osten",
+            "_solution"
+          ],
+          "top10_overlap": 0.0
+        },
+        "24": {
+          "jlens_top10": [
+            "___",
+            " _____",
+            " ____",
+            " ___",
+            "_____",
+            " ________",
+            "____",
+            "________",
+            " ______",
+            " __"
+          ],
+          "logit_lens_top10": [
+            " _______,",
+            " __________________",
+            "..............",
+            " _____",
+            "...\\",
+            " ...,",
+            "...........",
+            "akest",
+            "................................",
+            "........................"
+          ],
+          "top10_overlap": 0.1
+        },
+        "30": {
+          "jlens_top10": [
+            " __",
+            " ____",
+            " ___",
+            " ______",
+            " _____",
+            " the",
+            " ________",
+            " smallest",
+            " blank",
+            " __________________"
+          ],
+          "logit_lens_top10": [
+            " __",
+            " ____",
+            " greater",
+            " least",
+            " greatest",
+            " ______",
+            " _______,",
+            " considered",
+            " smallest",
+            " always"
+          ],
+          "top10_overlap": 0.4
+        }
+      }
+    },
+    "ascii_face": {
+      "model_parity_max_abs_error": 0.03125,
+      "model_top10": [
+        " nose",
+        " mouth",
+        " chin",
+        " eyes",
+        " eye",
+        " face",
+        " forehead",
+        " head",
+        " top",
+        " tip"
+      ],
+      "layers": {
+        "8": {
+          "jlens_top10": [
+            "\n\n",
+            " \\",
+            ".",
+            " \\\"",
+            "\\",
+            "\\\"",
+            " what",
+            " .",
+            "\n",
+            " way"
+          ],
+          "logit_lens_top10": [
+            "\u82d7",
+            "ore",
+            ".googleapis",
+            "\u8bf7\u8054\u7cfb\u5220\u9664",
+            "\u5c0f\u7f16\u4e3a\u5927\u5bb6\u6574\u7406\u7684",
+            " independientes",
+            "\u63a5\u4e0b\u6765",
+            "____",
+            "rand",
+            "\u9996\u6b4c"
+          ],
+          "top10_overlap": 0.0
+        },
+        "16": {
+          "jlens_top10": [
+            "\\\"",
+            " \\\"",
+            " __",
+            " ___",
+            "____",
+            "___",
+            " \\",
+            ".",
+            "\\n",
+            ".\\"
+          ],
+          "logit_lens_top10": [
+            "\u0446\u0435",
+            "ornado",
+            "\u67a2",
+            "ild",
+            "ropa",
+            "\u0634\u0645",
+            "lon",
+            "vor",
+            " abducted",
+            "ernel"
+          ],
+          "top10_overlap": 0.0
+        },
+        "24": {
+          "jlens_top10": [
+            " nose",
+            " eyes",
+            "\u9f3b\u5b50",
+            " noses",
+            " forehead",
+            " Nose",
+            " nasal",
+            " mouth",
+            "nose",
+            " ears"
+          ],
+          "logit_lens_top10": [
+            "\u9f3b\u5b50",
+            "nas",
+            " nose",
+            " nasal",
+            " eyes",
+            "onas",
+            "\u9f3b\u6881",
+            " forehead",
+            "fac",
+            "\u9f3b"
+          ],
+          "top10_overlap": 0.5
+        },
+        "30": {
+          "jlens_top10": [
+            " nose",
+            " mouth",
+            " nasal",
+            " chin",
+            " forehead",
+            " neck",
+            " Nose",
+            " eye",
+            " eyes",
+            " nostr"
+          ],
+          "logit_lens_top10": [
+            " nose",
+            "nose",
+            " chin",
+            " mouth",
+            "\u9f3b\u5b50",
+            " nasal",
+            " eyes",
+            " Nose",
+            "\u9f3b\u6881",
+            " forehead"
+          ],
+          "top10_overlap": 0.7
+        }
+      }
+    }
+  }
+}
